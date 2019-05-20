@@ -1,0 +1,25 @@
+#gameboard {
+    width: 600px;
+    height: 600px;
+    
+    margin: auto;
+}
+
+.row {
+    width: auto;
+    height: 60px;
+ 
+}
+.square {
+    
+    width: 60px;
+    height: 60px;
+    margin: 0px;
+    display: inline-block;
+    
+}
+
+.mainTile {
+    width: 60px;
+    height: auto;
+}
