@@ -16,10 +16,16 @@
     height: 60px;
     margin: 0px;
     display: inline-block;
+    border: 1px solid green;
+    box-sizing: border-box;
     
 }
 
 .mainTile {
-    width: 60px;
-    height: auto;
+    width: 58px;
+    height: 58px;
+}
+
+.character {
+    height: 58px;
 }
