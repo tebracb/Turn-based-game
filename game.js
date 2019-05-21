@@ -72,19 +72,19 @@ function getAdjacentTiles(indexPosition) {
 
     let adjacentTiles = [];
 
-        if(!((indexPosition+1) % 10 === 0)) {
+        if(!((indexPosition+1) % 10 === 0) && !($('.mainTile:eq(' + (indexPosition+1) + ')').hasClass("occupiedTile"))) {
             adjacentTiles.push($('.mainTile:eq(' + (indexPosition+1) + ')'));
         }
 
-        if(!(indexPosition % 10 === 0)) {
+        if(!(indexPosition % 10 === 0) && !($('.mainTile:eq(' + (indexPosition-1) + ')').hasClass("occupiedTile"))) {
             adjacentTiles.push($('.mainTile:eq(' + (indexPosition-1) + ')'));
         }
 
-        if(indexPosition > 9) {
+        if(indexPosition > 9 && !($('.mainTile:eq(' + (indexPosition-10) + ')').hasClass("occupiedTile")))  {
             adjacentTiles.push($('.mainTile:eq(' + (indexPosition-10) + ')'));
         }
         
-        if(indexPosition < 90) {
+        if(indexPosition < 90 && !($('.mainTile:eq(' + (indexPosition+10) + ')').hasClass("occupiedTile")))  {
             adjacentTiles.push($('.mainTile:eq(' + (indexPosition+10) + ')'));
         }
         
