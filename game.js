@@ -31,6 +31,8 @@ $(document).ready(function () {
     loopOverAdjacentTiles(character1Position);
     loopOverAdjacentTiles(character2Position);
 
+    characterMovement();
+
 });
 
 $($square).append(myImg);
@@ -60,6 +62,7 @@ function changeTilesWeapons() {
     for (i = 0; i < 4; i++) {
 
         $(selectRandomTile()).attr('src', 'img/wizard_hut_grey_grass_tile.png').addClass("occupiedTile");
+      
     }
 };
 
@@ -115,5 +118,13 @@ function addCharacters() {
    
 };
 
+function characterMovement() {
+    $.each((getAdjacentTiles(character1Position)), function() {
+        $(this).on('click', function () {
+            $('.mainTile:eq(' + (character1Position) + ')').attr('src', 'img/grass-no_edges.png');
+            $(this).attr('src', 'img/char1.png');
+            
+        });
+        });
 
-// $(getAdjacentTiles(character1Position))[0].css("border", "1px solid red");
+}
