@@ -1,27 +1,37 @@
 
 let myImg = $('<img />', {
     class: 'mainTile',
-    src: 'img/grass-no_edges.png',
+    src: 'img/dirtMainTile.png',
 });
 
 
-const rows = 10;
-const columns = 10;
-const $row = $("<div />", {
+const ROWS = 10;
+const COLUMNS = 10;
+const ROW = $("<div />", {
     class: 'row'
 });
-const $square = $("<div />", {
+const SQUARE = $("<div />", {
     class: 'square'
 });
 
+
+
+
+
+let veggies = {
+    src: "img/char2.png"
+}
+
+let veggieSrc = veggies.src;
+
 $(document).ready(function () {
     //add columns to the the temp row object
-    for (var i = 0; i < columns; i++) {
-        $row.append($square.clone());
+    for (var i = 0; i < COLUMNS; i++) {
+        ROW.append(SQUARE.clone());
     }
     //clone the temp row object with the columns to the wrapper
-    for (var i = 0; i < rows; i++) {
-        $("#gameboard").append($row.clone());
+    for (var i = 0; i < ROWS; i++) {
+        $("#gameboard").append(ROW.clone());
     }
     changeTilesMountains();
     changeTilesWeapons();
@@ -31,11 +41,11 @@ $(document).ready(function () {
     loopOverAdjacentTiles(character1Position);
     loopOverAdjacentTiles(character2Position);
 
-    characterMovement();
+    characterMovement(character1Position, fruitSrc);
 
 });
 
-$($square).append(myImg);
+$(SQUARE).append(myImg);
 
 
 
@@ -51,20 +61,35 @@ function selectRandomTile() {
 }
 
 function changeTilesMountains() {
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < 5; i++) {
 
-        $(selectRandomTile()).attr('src', 'img/mountains_grass_tile.png').addClass("occupiedTile");
+        $(selectRandomTile()).attr('src', 'img/vakond2.png').addClass("occupiedTile");
+        $(selectRandomTile()).attr('src', 'img/fuszal.png').addClass("occupiedTile");
         
     }
 };
 
 function changeTilesWeapons() {
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 1; i++) {
 
-        $(selectRandomTile()).attr('src', 'img/wizard_hut_grey_grass_tile.png').addClass("occupiedTile");
+        $(selectRandomTile()).attr('src', 'img/madarijeszto.png').addClass("occupiedTile");
+        $(selectRandomTile()).attr('src', 'img/colop.png').addClass("occupiedTile");
+        $(selectRandomTile()).attr('src', 'img/szalma.png').addClass("occupiedTile");
+        $(selectRandomTile()).attr('src', 'img/traktor.png').addClass("occupiedTile");
+        $(selectRandomTile()).attr('src', 'img/szocske.png').addClass("occupiedTile");
+        $(selectRandomTile()).attr('src', 'img/hernyo.png').addClass("occupiedTile");
+    };
       
-    }
-};
+    };
+
+    class Character {
+        constructor (src) {
+            this.src = src;
+           
+        }
+    };
+    let fruitSrc = "img/char1.png";
+    let fruits = new Character (fruitSrc);
 
 
 function getAdjacentTiles(indexPosition) {
@@ -98,7 +123,7 @@ function getAdjacentTiles(indexPosition) {
 
 function loopOverAdjacentTiles(characterPosition) {
 $.each((getAdjacentTiles(characterPosition)), function() {
-    this.css("border", "1px solid blue");
+    this.css("border", "1px solid #ed2f30");
     this.css("box-sizing", "border-box");
     });
 };
@@ -118,13 +143,30 @@ function addCharacters() {
    
 };
 
-function characterMovement() {
-    $.each((getAdjacentTiles(character1Position)), function() {
+// function endRound() {
+//     getAdjacentTiles(character2Position);
+//     loopOverAdjacentTiles(character2Position);
+// }
+
+// function togglePlayer(){
+    
+// }
+
+function characterMovement(characterPosition, characterImgSrc) {
+    $.each((getAdjacentTiles(characterPosition)), function() {
         $(this).on('click', function () {
-            $('.mainTile:eq(' + (character1Position) + ')').attr('src', 'img/grass-no_edges.png');
-            $(this).attr('src', 'img/char1.png');
+            $('.mainTile:eq(' + (characterPosition) + ')').attr('src', 'img/dirtMainTile.png');
+            $('.mainTile:eq(' + (characterPosition) + ')').removeClass("character character1 character2 occupiedTile");
+            $(this).attr('src', characterImgSrc);
+            $(this).addClass("character character1 occupiedTile");
+            characterPosition = $('.character1').index('.mainTile');
+
+            loopOverAdjacentTiles(characterPosition);
             
+           console.log(characterPosition);
         });
+        
         });
+        
 
 }
