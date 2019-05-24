@@ -14,7 +14,8 @@ const SQUARE = $("<div />", {
     class: 'square'
 });
 
-
+let fruitSrc = "img/fruits.png";
+let veggieSrc = "img/veggies.png";
 
 
 $(document).ready(function () {
@@ -31,10 +32,10 @@ $(document).ready(function () {
     addCharacters();
 
 
-    loopOverAdjacentTiles(fruits.calculatePosition());
+    
     loopOverAdjacentTiles(veggies.calculatePosition());
 
-    characterMovement(fruits.calculatePosition(), fruits.src);
+    veggies.characterMovement(veggies.calculatePosition(), veggieSrc);
 
 });
 
@@ -89,31 +90,63 @@ class Character {
             return $('.veggie').index('.mainTile');
         }
     };
+    
 
-};
-
-function characterMovement(characterPosition, characterImgSrc) {
-    $.each((getAdjacentTiles(characterPosition)), function () {
+    /* Function taking the moving character's calculatePosition() and img src as arguments */
+    characterMovement(calculatedPosition, src) {
+    $.each(getAdjacentTiles(calculatedPosition), function () {
         $(this).on('click', function () {
-            $('.mainTile:eq(' + (characterPosition) + ')').attr('src', 'img/dirtMainTile.png');
-            $('.mainTile:eq(' + (characterPosition) + ')').removeClass("character fruit veggie occupiedTile");
-            $(this).attr('src', characterImgSrc);
-            $(this).addClass("character fruit occupiedTile");
-            characterPosition = $('.fruit').index('.mainTile');
+            $('.mainTile:eq(' + (calculatedPosition) + ')').attr('src', 'img/dirtMainTile.png');
+            $('.mainTile:eq(' + (calculatedPosition) + ')').removeClass("character fruit veggie occupiedTile");
+            $(this).attr('src', src);
+            $(this).addClass("character occupiedTile");
+            if (src == fruitSrc) {
+            $(this).addClass("fruit");
+            } else {
+            $(this).addClass("veggie");
+            };
 
-            loopOverAdjacentTiles(characterPosition);
-
-            console.log(characterPosition);
+            console.log(calculatedPosition);
         });
 
     });
 }
 
+};
 
-let fruitSrc = "img/char1.png";
+// $.each(getAdjacentTiles(calculatedPosition), function () {
+//     $(this).on('click', function () {
+//         if ()
+
+//     };
+// }
+
+
+      
+
+
+// function characterMovement(characterPosition, characterImgSrc) {
+//     $.each((getAdjacentTiles(characterPosition)), function () {
+//         $(this).on('click', function () {
+//             $('.mainTile:eq(' + (characterPosition) + ')').attr('src', 'img/dirtMainTile.png');
+//             $('.mainTile:eq(' + (characterPosition) + ')').removeClass("character fruit veggie occupiedTile");
+//             $(this).attr('src', characterImgSrc);
+//             $(this).addClass("character fruit occupiedTile");
+//             characterPosition = $('.fruit').index('.mainTile');
+
+//             loopOverAdjacentTiles(characterPosition);
+
+//             console.log(characterPosition);
+//         });
+
+//     });
+// }
+
+
+
 let fruits = new Character(fruitSrc, 100);
 
-let veggieSrc = "img/char2.png";
+
 let veggies = new Character(veggieSrc, 100);
 
 function addCharacters() {
@@ -122,11 +155,10 @@ function addCharacters() {
 
 };
 
+let adjacentTiles = [];
+
 function getAdjacentTiles(characterPosition) {
 
-
-
-    let adjacentTiles = [];
 
     if (!((characterPosition + 1) % 10 === 0) && !($('.mainTile:eq(' + (characterPosition + 1) + ')').hasClass("occupiedTile"))) {
         adjacentTiles.push($('.mainTile:eq(' + (characterPosition + 1) + ')'));
@@ -157,7 +189,11 @@ function loopOverAdjacentTiles(characterPosition) {
 };
 
 
-
+function deselectAdjacentTiles(characterPosition) {
+    $.each((getAdjacentTiles(characterPosition)), function () {
+        this.css("border", "none");
+    });
+};
 
 
 // function endRound() {
