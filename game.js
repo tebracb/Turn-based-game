@@ -36,7 +36,7 @@ $(document).ready(function () {
 
     loopOverAdjacentTiles(veggies.calculatePosition());
 
-    characterTurn();
+    characterMovement(veggies.calculatePosition(), veggieSrc);
 
    
 
@@ -115,6 +115,7 @@ function addCharacters() {
 };
 
 function characterMovement(calculatedPosition, src) {
+    active = true;
 
     $.each(getAdjacentTiles(calculatedPosition), function () {
         $(this).on('click', function () {
@@ -123,16 +124,23 @@ function characterMovement(calculatedPosition, src) {
             $(this).attr('src', src);
             $(this).addClass("character occupiedTile");
 
-            if (src == fruitSrc) {
+            if (src === fruitSrc) {
                 $(this).addClass("fruit");
-                // deselectAdjacentTiles(fruits.calculatePosition());
-                // adjacentTiles = [];
-
 
             } else {
                 $(this).addClass("veggie");
-                // deselectAdjacentTiles(veggies.calculatePosition());
+            }
 
+                if (active === true) {
+
+                    veggieTurn();
+                    active = false;
+
+
+            } else {
+                
+                fruitTurn();
+                active = true;
 
                 console.log(calculatedPosition);
             };
@@ -142,35 +150,59 @@ function characterMovement(calculatedPosition, src) {
     });
 };
 
-function characterTurn(calculatedPosition) {
-    $.each(getAdjacentTiles(calculatedPosition), function () {
-        $(this).on('click', function () {
-            if (veggies.activePlayer === true) {
+
+function veggieTurn () {
+    deselectAdjacentTiles(fruits.calculatePosition());
+    let newVeggiePosition = veggies.calculatePosition()
+
+    loopOverAdjacentTiles(veggies.calculatePosition());
+
+    characterMovement(newVeggiePosition, veggieSrc);
+    // deselectAdjacentTiles(newVeggiePosition);
+
+  
+
+    // deselectAdjacentTiles(fruits.calculatePosition());
+    return adjacentTiles = [];
+}
+
+function fruitTurn () {
+    deselectAdjacentTiles(veggies.calculatePosition());
+    let newFruitPosition = fruits.calculatePosition()
+    loopOverAdjacentTiles(fruits.calculatePosition());
+    characterMovement(newFruitPosition, fruitSrc);
+    // deselectAdjacentTiles(newFruitPosition);
+
+    return adjacentTiles = [];
+}
+// function characterTurn(calculatedPosition) {
+//     $.each(getAdjacentTiles(calculatedPosition), function () {
+//         $(this).on('click', function () {
+//             if (veggies.activePlayer === true) {
                 
-                let newVeggiePosition = veggies.calculatePosition()
+//                 let newVeggiePosition = veggies.calculatePosition()
 
-                loopOverAdjacentTiles(newVeggiePosition);
+//                 loopOverAdjacentTiles(newVeggiePosition);
 
-                characterMovement(newVeggiePosition, veggieSrc);
-                deselectAdjacentTiles(newVeggiePosition);
-                adjacentTiles = [];
+//                 characterMovement(newVeggiePosition, veggieSrc);
+//                 deselectAdjacentTiles(newVeggiePosition);
 
-                veggies.activePlayer = false;
+//                 veggies.activePlayer = false;
 
-            } else {
+//             } else {
 
-                let newFruitPosition = fruits.calculatePosition()
-                loopOverAdjacentTiles(newFruitPosition);
-                characterMovement(newFruitPosition, fruitSrc);
-                deselectAdjacentTiles(newFruitPosition);
-                veggies.activePlayer = true;
+//                 let newFruitPosition = fruits.calculatePosition()
+//                 loopOverAdjacentTiles(newFruitPosition);
+//                 characterMovement(newFruitPosition, fruitSrc);
+//                 deselectAdjacentTiles(newFruitPosition);
+//                 veggies.activePlayer = true;
 
-            }
-        }
-        )
+//             }
+//         }
+//         )
 
-    });
-};
+//     });
+// };
 
 
 
