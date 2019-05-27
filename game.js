@@ -208,73 +208,24 @@ function characterMovement(calculatedPosition, src) {
 };
 
 
-// function characterMovement(calculatedPosition, src) {
 
 
-//     loopOverAdjacentTiles(calculatedPosition);
+x = true;
 
-//     $.each(getAdjacentTiles(calculatedPosition), function () {
-//         $(this).on('click', function () {
+function playerTurns() {
 
-
-//             $('.mainTile:eq(' + (calculatedPosition) + ')').attr('src', 'img/dirtMainTile.png');
-//             $('.mainTile:eq(' + (calculatedPosition) + ')').removeClass("character fruit veggie occupiedTile");
-//             $(this).attr('src', src);
-//             $(this).addClass("character occupiedTile");
-
-//             if (src === fruitSrc) {
-//                 $(this).addClass("fruit");
-
-//             } else {
-//                 $(this).addClass("veggie");
-//             }
-
-//             document.addEventListener("click", handler, true);
-
-//             deselectAdjacentTiles(calculatedPosition);
-
-
-//         });
-//     });
-// };
+    if (x) {
+      
+                document.removeEventListener("click", handler, true);
+                characterMovement(veggies.calculatePosition(), veggieSrc);
+                x = !x;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// x = true;
-
-// function playerTurns() {
-
-//     if (x) {
-//         $.each(getAdjacentTiles(veggies.calculatePosition()), function () {
-//             $(this).on('click', function () {
-
-//                 document.removeEventListener("click", handler, true);
-//                 characterMovement(veggies.calculatePosition(), veggieSrc);
-//                 veggies.activePlayer = false;
-
-                
-//             })
-
-//             }); 
-//         }else {
-//             $.each(getAdjacentTiles(fruits.calculatePosition()), function () {
-//                 $(this).on('click', function () {
-//                     document.removeEventListener("click", handler, true);
-//                     characterMovement(fruits.calculatePosition(), fruitSrc);
-//             veggies.activePlayer = true;
-//         })
-//         });
-// };
-// };
+        }else {
+            
+                    document.removeEventListener("click", handler, true);
+                    characterMovement(fruits.calculatePosition(), fruitSrc);
+                    x = !x;
+        }
+    };
