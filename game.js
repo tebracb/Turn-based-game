@@ -179,7 +179,7 @@ function handler(e) {
 
 function characterMovement(calculatedPosition, src) {
 
-
+    document.removeEventListener("click", handler, true);
     loopOverAdjacentTiles(calculatedPosition);
 
     $.each(getAdjacentTiles(calculatedPosition), function () {
@@ -216,16 +216,16 @@ function playerTurns() {
 
     if (x) {
       
-                document.removeEventListener("click", handler, true);
+                
                 characterMovement(veggies.calculatePosition(), veggieSrc);
-                x = !x;
+                x = false;
 
 
 
         }else {
             
-                    document.removeEventListener("click", handler, true);
+                    
                     characterMovement(fruits.calculatePosition(), fruitSrc);
-                    x = !x;
+                    x = true;
         }
     };
