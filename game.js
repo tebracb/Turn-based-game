@@ -158,16 +158,17 @@ function loopOverAdjacentTiles(characterPosition) {
 
 function deselectAdjacentTiles(characterPosition) {
     $.each((getAdjacentTiles(characterPosition)), function () {
-        this.css("border", "none");
-        $('.mainTile:eq(' + (characterPosition) + ')').css("border", "none");
+        $(this).css("border", "none");
+
+        let newPositionVeggie = $('.mainTile:eq(' + $('.veggie').index('.mainTile') + ')');
+        let newPositionFruit = $('.mainTile:eq(' + $('.fruit').index('.mainTile') + ')');
+        newPositionVeggie.css("border", "none");
+        newPositionFruit.css("border", "none");
+
+        
     });
 };
 
-
-function handler(e) {
-    e.stopPropagation();
-    e.preventDefault();
-}
 
 /*-------------------------------------------------------------------------------
             MOVEMENT
@@ -192,14 +193,21 @@ function characterMovement(calculatedPosition, src) {
 
             if (src === fruitSrc) {
                 $(this).addClass("fruit");
+                $(this).off('click');
                 
 
             } else {
                 $(this).addClass("veggie");
+                // $('.mainTile:eq(' + $('.veggie').index('.mainTile') + ')').off('click');
+                $(this).off("click");
                 
             }
 
-            document.addEventListener("click", handler, true);
+            $.each(getAdjacentTiles(calculatedPosition), function (){
+                $(this).off('click');
+            });
+            $('.mainTile:eq(' + (calculatedPosition) + ')').off('click');
+
 
             deselectAdjacentTiles(calculatedPosition);
 
@@ -218,7 +226,7 @@ function playerTurns() {
     if (x) {
       
           
-            document.removeEventListener("click", handler, true);
+         
             loopOverAdjacentTiles(veggies.calculatePosition());
                 characterMovement(veggies.calculatePosition(), veggieSrc);
                 
@@ -227,7 +235,7 @@ function playerTurns() {
 
 
         }else {
-            document.removeEventListener("click", handler, true);
+    
             loopOverAdjacentTiles(fruits.calculatePosition());
                     characterMovement(fruits.calculatePosition(), fruitSrc);
                     
