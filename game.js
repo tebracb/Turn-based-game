@@ -104,10 +104,6 @@ class Character {
     };
 
 
-    /* Function taking the moving character's calculatePosition() and img src as arguments, moving the character
-     to the new tile and changing img src-s and css classes accordingly
-     Does not recalculate character's position  */
-
 
 };
 
@@ -122,7 +118,7 @@ function addCharacters() {
 };
 
 /*-------------------------------------------------------------------------------
-            ADJACENT AVAILABLE TILES
+            ADJACENTTILES
 ---------------------------------------------------------------------------------*/
 
 /*function taking calculatePosition() (character's index position) as argument , 
@@ -177,12 +173,15 @@ function handler(e) {
             MOVEMENT
 ---------------------------------------------------------------------------------*/
 
+
+    /* Function taking the moving character's calculatePosition() and img src as arguments, moving the character
+     to the new tile and changing img src-s and css classes accordingly
+     Does not recalculate character's position  */
+
 function characterMovement(calculatedPosition, src) {
 
-    document.removeEventListener("click", handler, true);
-    loopOverAdjacentTiles(calculatedPosition);
-
     $.each(getAdjacentTiles(calculatedPosition), function () {
+
         $(this).on('click', function () {
 
 
@@ -193,9 +192,11 @@ function characterMovement(calculatedPosition, src) {
 
             if (src === fruitSrc) {
                 $(this).addClass("fruit");
+                
 
             } else {
                 $(this).addClass("veggie");
+                
             }
 
             document.addEventListener("click", handler, true);
@@ -216,16 +217,20 @@ function playerTurns() {
 
     if (x) {
       
-                
+          
+            document.removeEventListener("click", handler, true);
+            loopOverAdjacentTiles(veggies.calculatePosition());
                 characterMovement(veggies.calculatePosition(), veggieSrc);
+                
                 x = false;
 
 
 
         }else {
-            
-                    
+            document.removeEventListener("click", handler, true);
+            loopOverAdjacentTiles(fruits.calculatePosition());
                     characterMovement(fruits.calculatePosition(), fruitSrc);
+                    
                     x = true;
         }
     };
