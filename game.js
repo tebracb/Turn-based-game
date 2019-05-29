@@ -118,7 +118,7 @@ function addCharacters() {
 };
 
 /*-------------------------------------------------------------------------------
-            ADJACENTTILES
+            ADJACENT TILES
 ---------------------------------------------------------------------------------*/
 
 /*function taking calculatePosition() (character's index position) as argument , 
@@ -165,7 +165,7 @@ function deselectAdjacentTiles(characterPosition) {
         newPositionVeggie.css("border", "none");
         newPositionFruit.css("border", "none");
 
-        
+
     });
 };
 
@@ -175,9 +175,9 @@ function deselectAdjacentTiles(characterPosition) {
 ---------------------------------------------------------------------------------*/
 
 
-    /* Function taking the moving character's calculatePosition() and img src as arguments, moving the character
-     to the new tile and changing img src-s and css classes accordingly
-     Does not recalculate character's position  */
+/* Function taking the moving character's calculatePosition() and img src as arguments, moving the character
+ to the new tile and changing img src-s and css classes accordingly
+ Does not recalculate character's position  */
 
 function characterMovement(calculatedPosition, src) {
 
@@ -193,22 +193,20 @@ function characterMovement(calculatedPosition, src) {
 
             if (src === fruitSrc) {
                 $(this).addClass("fruit");
-                $(this).off('click');
-                
-
             } else {
                 $(this).addClass("veggie");
-                // $('.mainTile:eq(' + $('.veggie').index('.mainTile') + ')').off('click');
-                $(this).off("click");
-                
+
             }
 
-            $.each(getAdjacentTiles(calculatedPosition), function (){
+            //REMOVE EVENT LISTENERS
+            
+            // $('.mainTile:eq(' + $('.veggie').index('.mainTile') + ')').off('click');
+            $(this).off("click");
+
+            $.each(getAdjacentTiles(calculatedPosition), function () {
                 $(this).off('click');
             });
-            $('.mainTile:eq(' + (calculatedPosition) + ')').off('click');
-
-
+            
             deselectAdjacentTiles(calculatedPosition);
 
 
@@ -224,21 +222,21 @@ x = true;
 function playerTurns() {
 
     if (x) {
-      
-          
-         
-            loopOverAdjacentTiles(veggies.calculatePosition());
-                characterMovement(veggies.calculatePosition(), veggieSrc);
-                
-                x = false;
 
 
 
-        }else {
-    
-            loopOverAdjacentTiles(fruits.calculatePosition());
-                    characterMovement(fruits.calculatePosition(), fruitSrc);
-                    
-                    x = true;
-        }
-    };
+        loopOverAdjacentTiles(veggies.calculatePosition());
+        characterMovement(veggies.calculatePosition(), veggieSrc);
+
+        x = false;
+
+
+
+    } else {
+
+        loopOverAdjacentTiles(fruits.calculatePosition());
+        characterMovement(fruits.calculatePosition(), fruitSrc);
+
+        x = true;
+    }
+};
