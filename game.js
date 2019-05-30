@@ -126,24 +126,28 @@ pushes the tiles which are not occupied or not after the edge of the map to adja
 
 function getAdjacentTiles(characterPosition) {
 
+
     adjacentTiles = [];
 
-    if (!((characterPosition + 1) % 10 === 0) && !($('.mainTile:eq(' + (characterPosition + 1) + ')').hasClass("occupiedTile"))) {
-        adjacentTiles.push($('.mainTile:eq(' + (characterPosition + 1) + ')'));
+    let i = 1;
+    while (!((characterPosition + i) % COLUMNS === 0) && !($('.mainTile:eq(' + (characterPosition + i) + ')').hasClass("occupiedTile")) && i<=3) {
+        adjacentTiles.push($('.mainTile:eq(' + (characterPosition + i) + ')'));
+        i++;
     }
 
-    if (!(characterPosition % 10 === 0) && !($('.mainTile:eq(' + (characterPosition - 1) + ')').hasClass("occupiedTile"))) {
+    if (!(characterPosition % COLUMNS === 0) && !($('.mainTile:eq(' + (characterPosition - 1) + ')').hasClass("occupiedTile"))) {
         adjacentTiles.push($('.mainTile:eq(' + (characterPosition - 1) + ')'));
     }
 
-    if (characterPosition > 9 && !($('.mainTile:eq(' + (characterPosition - 10) + ')').hasClass("occupiedTile"))) {
+    if (characterPosition > (COLUMNS - 1) && !($('.mainTile:eq(' + (characterPosition - 10) + ')').hasClass("occupiedTile"))) {
         adjacentTiles.push($('.mainTile:eq(' + (characterPosition - 10) + ')'));
     }
 
-    if (characterPosition < 90 && !($('.mainTile:eq(' + (characterPosition + 10) + ')').hasClass("occupiedTile"))) {
+    if (characterPosition < ((COLUMNS * ROWS) - COLUMNS) && !($('.mainTile:eq(' + (characterPosition + 10) + ')').hasClass("occupiedTile"))) {
         adjacentTiles.push($('.mainTile:eq(' + (characterPosition + 10) + ')'));
     }
 
+//  let adjacentTiles = Tiles.concat(adjacentTilesRight);
 
     return adjacentTiles;
 };
@@ -199,23 +203,24 @@ function characterMovement(calculatedPosition, src) {
             }
 
             //REMOVE EVENT LISTENERS
-            
+
+            $.each(getAdjacentTiles(calculatedPosition), function () {
+                $(this).off('click');
+            });
+
             // $('.mainTile:eq(' + $('.veggie').index('.mainTile') + ')').off('click');
             $(this).off("click");
 
             $.each(getAdjacentTiles(calculatedPosition), function () {
                 $(this).off('click');
             });
-            
+
             deselectAdjacentTiles(calculatedPosition);
 
-
+            playerTurns();
         });
     });
 };
-
-
-
 
 x = true;
 
@@ -223,14 +228,10 @@ function playerTurns() {
 
     if (x) {
 
-
-
         loopOverAdjacentTiles(veggies.calculatePosition());
         characterMovement(veggies.calculatePosition(), veggieSrc);
 
         x = false;
-
-
 
     } else {
 
