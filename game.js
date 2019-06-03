@@ -74,7 +74,7 @@ function changeTilesObstacles() {
 function changeTilesWeapons() {
     for (i = 0; i < 1; i++) {
 
-        $(selectRandomTile()).attr('src', 'img/scarecrow.png').addClass("weapon scarescrow").removeClass("occupiedTile");   
+        $(selectRandomTile()).attr('src', 'img/scarecrow.png').addClass("weapon scarescrow").removeClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/tractor.png').addClass("weapon tractor").removeClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/grasshopper.png').addClass("weapon grasshopper").removeClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/caterpillar.png').addClass("weapon caterpillar").removeClass("occupiedTile");
@@ -121,9 +121,9 @@ class Weapon {
 };
 
 let scarecrow = new Weapon("Scarecrow", "img/scarecrow.png", 30)
-let tractor = new Weapon("Tractor","img/tractor.png", 35)
-let grasshopper = new Weapon("Grasshopper","img/grasshopper.png", 40)
-let caterpillar = new Weapon("Caterpillar","img/caterpillar.png", 25)
+let tractor = new Weapon("Tractor", "img/tractor.png", 35)
+let grasshopper = new Weapon("Grasshopper", "img/grasshopper.png", 40)
+let caterpillar = new Weapon("Caterpillar", "img/caterpillar.png", 25)
 
 
 function addCharacters() {
@@ -173,59 +173,58 @@ function addCharacters() {
 //             $('#bigFruitPic').attr("src", "img/fruit_caterpillar.png")
 //         }
 //     }
-  
+
 // }
 /*-------------------------------------------------------------------------------
-            ADJACENT TILES
+            SELECTED TILES
 ---------------------------------------------------------------------------------*/
 
-/*function taking calculatePosition() (character's index position) as argument , 
-pushes the tiles which are not occupied or not after the edge of the map to adjacentTiles array*/
+/*function taking calculatePosition() (character's index position) as argument, 
+loops through 3 tiles in all 4 directions,
+pushes the tiles which are not occupied or not after the edge of the map to availableTiles array*/
 
-function getAdjacentTiles(characterPosition) {
+function getAvailableTiles(characterPosition) {
 
 
-    adjacentTiles = [];
+    availableTiles = [];
 
     let i = 1;
-    while (!((characterPosition + i) % COLUMNS === 0) && !($('.mainTile:eq(' + (characterPosition + i) + ')').hasClass("occupiedTile")) && i<=3) {
-        adjacentTiles.push($('.mainTile:eq(' + (characterPosition + i) + ')'));
+    while (!((characterPosition + i) % COLUMNS === 0) && !($('.mainTile:eq(' + (characterPosition + i) + ')').hasClass("occupiedTile")) && i <= 3) {
+        availableTiles.push($('.mainTile:eq(' + (characterPosition + i) + ')'));
         i++;
     }
 
-    i=1;
-    while (!((characterPosition - i + 1) % COLUMNS === 0) && !($('.mainTile:eq(' + (characterPosition - i) + ')').hasClass("occupiedTile")) && i<=3) {
-        adjacentTiles.push($('.mainTile:eq(' + (characterPosition - i) + ')'));
+    i = 1;
+    while (!((characterPosition - i + 1) % COLUMNS === 0) && !($('.mainTile:eq(' + (characterPosition - i) + ')').hasClass("occupiedTile")) && i <= 3) {
+        availableTiles.push($('.mainTile:eq(' + (characterPosition - i) + ')'));
         i++;
     }
 
-    i=1;
-    while (((characterPosition - COLUMNS*i) >= 0) && !($('.mainTile:eq(' + (characterPosition - COLUMNS*i) + ')').hasClass("occupiedTile")) && i<=3) {
-        adjacentTiles.push($('.mainTile:eq(' + (characterPosition - COLUMNS*i) + ')'));
+    i = 1;
+    while (((characterPosition - COLUMNS * i) >= 0) && !($('.mainTile:eq(' + (characterPosition - COLUMNS * i) + ')').hasClass("occupiedTile")) && i <= 3) {
+        availableTiles.push($('.mainTile:eq(' + (characterPosition - COLUMNS * i) + ')'));
         i++;
     }
 
-    i=1;
-    while ((characterPosition + COLUMNS*i) < (COLUMNS * ROWS) && !($('.mainTile:eq(' + (characterPosition + COLUMNS*i) + ')').hasClass("occupiedTile")) && i<=3) {
-        adjacentTiles.push($('.mainTile:eq(' + (characterPosition + COLUMNS*i) + ')'));
+    i = 1;
+    while ((characterPosition + COLUMNS * i) < (COLUMNS * ROWS) && !($('.mainTile:eq(' + (characterPosition + COLUMNS * i) + ')').hasClass("occupiedTile")) && i <= 3) {
+        availableTiles.push($('.mainTile:eq(' + (characterPosition + COLUMNS * i) + ')'));
         i++;
     }
 
-//  let adjacentTiles = Tiles.concat(adjacentTilesRight);
-
-    return adjacentTiles;
+    return availableTiles;
 };
 
 
-function loopOverAdjacentTiles(characterPosition) {
-    $.each((getAdjacentTiles(characterPosition)), function () {
+function loopOverAvailableTiles(characterPosition) {
+    $.each((getAvailableTiles(characterPosition)), function () {
         this.css("border", "1px solid #ed2f30");
         this.css("box-sizing", "border-box");
     });
 };
 
-function deselectAdjacentTiles(characterPosition) {
-    $.each((getAdjacentTiles(characterPosition)), function () {
+function deselectAvailableTiles(characterPosition) {
+    $.each((getAvailableTiles(characterPosition)), function () {
         $(this).css("border", "none");
 
         let newPositionVeggie = $('.mainTile:eq(' + $('.veggie').index('.mainTile') + ')');
@@ -249,18 +248,20 @@ function deselectAdjacentTiles(characterPosition) {
 
 function characterMovement(calculatedPosition, src) {
 
-    $.each(getAdjacentTiles(calculatedPosition), function () {
+    $.each(getAvailableTiles(calculatedPosition), function () {
 
-            
+
         $(this).on('click', function () {
-           
-            
-            $.each(getAdjacentTiles(calculatedPosition), function () {
+
+            //REMOVE EVENT LISTENERS
+
+            $.each(getAvailableTiles(calculatedPosition), function () {
                 $(this).off('click');
             });
-            $(this).off('click');
-            deselectAdjacentTiles(calculatedPosition);
-           
+            deselectAvailableTiles(calculatedPosition);
+
+            //cdelete and add CSS classes based on the new position
+
             $('.mainTile:eq(' + (calculatedPosition) + ')').attr('src', 'img/dirtMainTile.png');
             $('.mainTile:eq(' + (calculatedPosition) + ')').removeClass("character fruit veggie occupiedTile");
             $(this).attr('src', src);
@@ -273,15 +274,6 @@ function characterMovement(calculatedPosition, src) {
 
             }
 
-
-            //REMOVE EVENT LISTENERS
-
-
-            // $('.mainTile:eq(' + $('.veggie').index('.mainTile') + ')').off('click');
-            // $(this).off("click");
-
-         
-
             playerTurns();
         });
     });
@@ -292,18 +284,18 @@ x = true;
 function playerTurns() {
 
     if (x) {
-    //     checkForWeapons (fruits.calculatePosition(),'#fruitWeaponPoint', '#fruitWeaponName');
-        loopOverAdjacentTiles(veggies.calculatePosition());
+        //     checkForWeapons (fruits.calculatePosition(),'#fruitWeaponPoint', '#fruitWeaponName');
+        loopOverAvailableTiles(veggies.calculatePosition());
         characterMovement(veggies.calculatePosition(), veggieSrc);
-        
-        
+
+
 
         x = false;
 
     } else {
 
         // checkForWeapons (veggies.calculatePosition(), '#veggieWeaponPoint', '#veggieWeaponName');
-        loopOverAdjacentTiles(fruits.calculatePosition());
+        loopOverAvailableTiles(fruits.calculatePosition());
         characterMovement(fruits.calculatePosition(), fruitSrc);
 
         x = true;
