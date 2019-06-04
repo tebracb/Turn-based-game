@@ -74,7 +74,7 @@ function changeTilesObstacles() {
 function changeTilesWeapons() {
     for (i = 0; i < 1; i++) {
 
-        $(selectRandomTile()).attr('src', 'img/scarecrow.png').addClass("weapon scarescrow").removeClass("occupiedTile");
+        $(selectRandomTile()).attr('src', 'img/scarecrow.png').addClass("weapon scarecrow").removeClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/tractor.png').addClass("weapon tractor").removeClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/grasshopper.png').addClass("weapon grasshopper").removeClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/caterpillar.png').addClass("weapon caterpillar").removeClass("occupiedTile");
@@ -87,10 +87,12 @@ function changeTilesWeapons() {
 ---------------------------------------------------------------------------------*/
 
 class Character {
-    constructor(src, confidenceLevel, activePlayer) {
+    constructor(src, bigImgID, confidenceLevel, activePlayer) {
         this.src = src;
+        this.bigImgID = bigImgID;
         this.cofidenceLevel = confidenceLevel;
         this.activePlayer = activePlayer;
+
 
     }
 
@@ -106,24 +108,29 @@ class Character {
 
 };
 
-let fruits = new Character(fruitSrc, 100, false);
+let fruits = new Character(fruitSrc, '#bigFruitPic', 100, false);
 
-let veggies = new Character(veggieSrc, 100, true);
+let veggies = new Character(veggieSrc, '#bigVeggiePic', 100, true);
 
+let weapons = [];
 
 class Weapon {
-    constructor(name, src, scarePoint) {
+    constructor(name, src, scarePoint, cssClass, veggieWithWeaponSrc, fruitWithWeaponSrc) {
         this.name = name;
         this.src = src;
         this.scarePoint = scarePoint;
+        this.cssClass = cssClass;
+        this.veggieWithWeaponSrc = veggieWithWeaponSrc;
+        this.fruitWithWeaponSrc = fruitWithWeaponSrc;
+        weapons.push(this);
 
     }
 };
 
-let scarecrow = new Weapon("Scarecrow", "img/scarecrow.png", 30)
-let tractor = new Weapon("Tractor", "img/tractor.png", 35)
-let grasshopper = new Weapon("Grasshopper", "img/grasshopper.png", 40)
-let caterpillar = new Weapon("Caterpillar", "img/caterpillar.png", 25)
+let scarecrow = new Weapon("Scarecrow", "img/scarecrow.png", 30, "scarecrow", "img/veggie_scarecrow.png","img/fruit_scarecrow.png")
+let tractor = new Weapon("Tractor", "img/tractor.png", 35, "tractor", "img/veggie_tractor.png", "img/fruit_tractor.png")
+let grasshopper = new Weapon("Grasshopper", "img/grasshopper.png", 40, "grasshopper","img/veggie_grasshopper.png", "img/fruit_grasshopper.png")
+let caterpillar = new Weapon("Caterpillar", "img/caterpillar.png", 25, "caterpillar", "img/veggie_caterpillar.png", "img/fruit_caterpillar.png")
 
 
 function addCharacters() {
@@ -132,49 +139,43 @@ function addCharacters() {
 
 };
 
-// function checkForWeapons(calculatePosition, characterWeaponPoint, characterWeaponName){
-//     if ($('.mainTile:eq(' + (calculatePosition) + ')').hasClass("scarescrow")) {
-//         $('.mainTile:eq(' + (calculatePosition) + ')').removeClass("scarescrow");
-//         $(characterWeaponPoint).text(scarecrow.scarePoint);
-//         $(characterWeaponName).text(scarecrow.name);
-//         if(calculatePosition === veggies.calculatePosition()){
-//             $('#bigVeggiePic').attr("src", "img/veggie_scarecrow.png")
-//         } else{
-//             $('#bigFruitPic').attr("src", "img/fruit_scarecrow.png")
-//         }
+// $(availableTilesRight).each(function() {
+//     if($(this).hasClass("tractor")){
+//     console.log("tractor");
 //     }
+//     })
 
-//     if ($('.mainTile:eq(' + (calculatePosition) + ')').hasClass("tractor")) {
-//         $(characterWeaponPoint).text(tractor.scarePoint);
-//         $(characterWeaponName).text(tractor.name);
-//         if(calculatePosition === veggies.calculatePosition()){
-//             $('#bigVeggiePic').attr("src", "img/veggie_tractor.png")
-//         } else{
-//             $('#bigFruitPic').attr("src", "img/fruit_tractor.png")
-//         }
-//     }
+// $(availableTilesRight).each(function(i, obj) {
+// 	if ($(obj[i]).hasClass('weapon')){
+// 	$(obj[i]).css("border", "2px solid blue");
+// }})
 
-//     if ($('.mainTile:eq(' + (calculatePosition) + ')').hasClass("grasshopper")) {
-//         $(characterWeaponPoint).text(grasshopper.scarePoint);
-//         $(characterWeaponName).text(grasshopper.name);
-//         if(calculatePosition === veggies.calculatePosition()){
-//             $('#bigVeggiePic').attr("src", "img/veggie_grasshopper.png")
-//         } else{
-//             $('#bigFruitPic').attr("src", "img/fruit_grasshopper.png")
-//         }
-//     }
+// function weaponRight (){
+// $(availableTilesRight).filter(function() {
+//     return $(this).hasClass("weapon");
 
-//     if ($('.mainTile:eq(' + (calculatePosition) + ')').hasClass("caterpillar")) {
-//         $(characterWeaponPoint).text(caterpillar.scarePoint);
-//         $(characterWeaponName).text(caterpillar.name);
-//         if(calculatePosition === veggies.calculatePosition()){
-//             $('#bigVeggiePic').attr("src", "img/veggie_caterpillar.png")
-//         } else{
-//             $('#bigFruitPic').attr("src", "img/fruit_caterpillar.png")
-//         }
-//     }
+//     });
+// };
 
-// }
+
+
+function checkForWeapons(calculatePosition, characterWeaponPoint, characterWeaponName) {
+
+    $.each(weapons, function (index, w) {
+        if ($('.mainTile:eq(' + (calculatePosition) + ')').hasClass(w.cssClass)) {
+            $('.mainTile:eq(' + (calculatePosition) + ')').removeClass(w.cssClass).removeClass("weapon");
+            $(characterWeaponPoint).text(w.scarePoint);
+            $(characterWeaponName).text(w.name);
+            if (calculatePosition === veggies.calculatePosition()) {
+                $(veggies.bigImgID).attr("src", w.veggieWithWeaponSrc);
+            } else {
+                $(fruits.bigImgID).attr("src", w.fruitWithWeaponSrc);
+            }
+        }
+
+    });
+};
+
 /*-------------------------------------------------------------------------------
             SELECTED TILES
 ---------------------------------------------------------------------------------*/
@@ -187,10 +188,12 @@ function getAvailableTiles(characterPosition) {
 
 
     availableTiles = [];
+    availableTilesRight = [];
 
     let i = 1;
     while (!((characterPosition + i) % COLUMNS === 0) && !($('.mainTile:eq(' + (characterPosition + i) + ')').hasClass("occupiedTile")) && i <= 3) {
         availableTiles.push($('.mainTile:eq(' + (characterPosition + i) + ')'));
+        availableTilesRight.push($('.mainTile:eq(' + (characterPosition + i) + ')'));
         i++;
     }
 
@@ -260,7 +263,7 @@ function characterMovement(calculatedPosition, src) {
             });
             deselectAvailableTiles(calculatedPosition);
 
-            //cdelete and add CSS classes based on the new position
+            //delete and add CSS classes based on the new position
 
             $('.mainTile:eq(' + (calculatedPosition) + ')').attr('src', 'img/dirtMainTile.png');
             $('.mainTile:eq(' + (calculatedPosition) + ')').removeClass("character fruit veggie occupiedTile");
@@ -284,7 +287,7 @@ x = true;
 function playerTurns() {
 
     if (x) {
-        //     checkForWeapons (fruits.calculatePosition(),'#fruitWeaponPoint', '#fruitWeaponName');
+        checkForWeapons(fruits.calculatePosition(), '#fruitWeaponPoint', '#fruitWeaponName');
         loopOverAvailableTiles(veggies.calculatePosition());
         characterMovement(veggies.calculatePosition(), veggieSrc);
 
@@ -294,7 +297,7 @@ function playerTurns() {
 
     } else {
 
-        // checkForWeapons (veggies.calculatePosition(), '#veggieWeaponPoint', '#veggieWeaponName');
+        checkForWeapons(veggies.calculatePosition(), '#veggieWeaponPoint', '#veggieWeaponName');
         loopOverAvailableTiles(fruits.calculatePosition());
         characterMovement(fruits.calculatePosition(), fruitSrc);
 

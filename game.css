@@ -1,6 +1,5 @@
 @font-face {
-    /* font-family: mrVampire;
-    src: url("../style/font/MISTV.ttf"); */
+  
     font-family: Crayon;
     src: url("../style/font/DK Crayon Crumble.ttf");
   }
@@ -59,11 +58,13 @@ text-align: center;
 font-family: Crayon;
 
 font-weight: normal;
+font-size: 1.15em;
 
 }
 
 #player1 {
     color: rgba(14, 85, 14, 0.897);
+  
 }
 
 #player2 {
@@ -76,9 +77,13 @@ font-weight: normal;
 
 h1{
     font-size: 32px;
-    font-weight: normal;
+    font-weight: bold;
 }
 
 h2, h3 {
     font-weight: normal;
+}
+
+h3{
+    font-size: 1.3em;
 }
