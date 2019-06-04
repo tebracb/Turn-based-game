@@ -158,6 +158,9 @@ function addCharacters() {
 // };
 
 
+/*-------------------------------------------------------------------------------
+            WEAPON FUNCTIONALITY
+---------------------------------------------------------------------------------*/
 
 function checkForWeapons(calculatePosition, characterWeaponPoint, characterWeaponName) {
 
@@ -219,8 +222,25 @@ function getAvailableTiles(characterPosition) {
 };
 
 
-function loopOverAvailableTiles(characterPosition) {
+function selectAvailableTiles(characterPosition) {
     $.each((getAvailableTiles(characterPosition)), function () {
+
+        // if (characterPosition === fruits.calculatePosition()) {
+        // $(this).mouseenter(function() {
+        //     $(this).attr("src", "img/fruits_move.png")
+        //   });
+
+        //   $(this).mouseleave(function() {
+        //     $(this).attr("src", 'img/dirtMainTile.png')
+        //   });
+
+        //   $(this).on('click', function() {
+        //     $(this).attr("src", fruits.src);
+        //     $(this).off("mouseenter");
+        //     $(this).off("mouseleave");
+        //   });
+
+        // }
         this.css("border", "1px solid #ed2f30");
         this.css("box-sizing", "border-box");
     });
@@ -257,7 +277,7 @@ function characterMovement(calculatedPosition, src) {
         $(this).on('click', function () {
 
             //REMOVE EVENT LISTENERS
-
+            
             $.each(getAvailableTiles(calculatedPosition), function () {
                 $(this).off('click');
             });
@@ -282,25 +302,24 @@ function characterMovement(calculatedPosition, src) {
     });
 };
 
-x = true;
 
 function playerTurns() {
 
-    if (x) {
+    if (veggies.activePlayer) {
         checkForWeapons(fruits.calculatePosition(), '#fruitWeaponPoint', '#fruitWeaponName');
-        loopOverAvailableTiles(veggies.calculatePosition());
+        selectAvailableTiles(veggies.calculatePosition());
         characterMovement(veggies.calculatePosition(), veggieSrc);
 
 
 
-        x = false;
+        veggies.activePlayer = false; //TODO - fix activeplayer to update based on the actual active player
 
     } else {
 
         checkForWeapons(veggies.calculatePosition(), '#veggieWeaponPoint', '#veggieWeaponName');
-        loopOverAvailableTiles(fruits.calculatePosition());
+        selectAvailableTiles(fruits.calculatePosition());
         characterMovement(fruits.calculatePosition(), fruitSrc);
 
-        x = true;
+        veggies.activePlayer = true;
     }
 };
