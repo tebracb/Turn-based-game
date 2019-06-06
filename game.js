@@ -1,14 +1,10 @@
 /*-------------------------------------------------------------------------------
                 DEFINE VARIABLES
 ---------------------------------------------------------------------------------*/
-
-
-
 let landTile = $('<img />', {
     class: 'mainTile',
     src: 'img/dirtMainTile.png',
 });
-
 
 const ROWS = 10;
 const COLUMNS = 10;
@@ -19,8 +15,10 @@ const SQUARE = $("<div />", {
     class: 'square'
 });
 
-let fruitSrc = "img/fruits.png";
+let fruitSrc = "img/fruits2.png";
 let veggieSrc = "img/veggies.png";
+let weapons = [];
+let oldWeaponVeggie = "";
 
 /*-------------------------------------------------------------------------------
                 DOCUMENT READY - called when the document is loaded
@@ -39,11 +37,9 @@ $(document).ready(function () {
     changeTilesWeapons();
     addCharacters();
 
-    playerTurns();
+   playerTurns();
 
 });
-
-
 
 /*-------------------------------------------------------------------------------
                 MAP POPULATED WITH RANDOMLY PLACED ELEMENTS
@@ -87,13 +83,12 @@ function changeTilesWeapons() {
 ---------------------------------------------------------------------------------*/
 
 class Character {
-    constructor(src, bigImgID, confidenceLevel, activePlayer) {
+    constructor(src, bigImgID, confidenceLevel, activePlayer, currentWeapon) {
         this.src = src;
         this.bigImgID = bigImgID;
         this.cofidenceLevel = confidenceLevel;
         this.activePlayer = activePlayer;
-
-
+        this.currentWeapon = currentWeapon;
     }
 
     calculatePosition() {
@@ -103,16 +98,11 @@ class Character {
             return ($('.veggie').index('.mainTile'));
         }
     };
-
-
-
 };
 
-let fruits = new Character(fruitSrc, '#bigFruitPic', 100, false);
+let fruits = new Character(fruitSrc, '#bigFruitPic', 100, false, "");
 
-let veggies = new Character(veggieSrc, '#bigVeggiePic', 100, true);
-
-let weapons = [];
+let veggies = new Character(veggieSrc, '#bigVeggiePic', 100, true, "");
 
 class Weapon {
     constructor(name, src, scarePoint, cssClass, veggieWithWeaponSrc, fruitWithWeaponSrc) {
@@ -127,9 +117,9 @@ class Weapon {
     }
 };
 
-let scarecrow = new Weapon("Scarecrow", "img/scarecrow.png", 30, "scarecrow", "img/veggie_scarecrow.png","img/fruit_scarecrow.png")
+let scarecrow = new Weapon("Scarecrow", "img/scarecrow.png", 30, "scarecrow", "img/veggie_scarecrow.png", "img/fruit_scarecrow.png")
 let tractor = new Weapon("Tractor", "img/tractor.png", 35, "tractor", "img/veggie_tractor.png", "img/fruit_tractor.png")
-let grasshopper = new Weapon("Grasshopper", "img/grasshopper.png", 40, "grasshopper","img/veggie_grasshopper.png", "img/fruit_grasshopper.png")
+let grasshopper = new Weapon("Grasshopper", "img/grasshopper.png", 40, "grasshopper", "img/veggie_grasshopper.png", "img/fruit_grasshopper.png")
 let caterpillar = new Weapon("Caterpillar", "img/caterpillar.png", 25, "caterpillar", "img/veggie_caterpillar.png", "img/fruit_caterpillar.png")
 
 
@@ -163,6 +153,7 @@ function addCharacters() {
 ---------------------------------------------------------------------------------*/
 
 function checkForWeapons(calculatePosition, characterWeaponPoint, characterWeaponName) {
+    
 
     $.each(weapons, function (index, w) {
         if ($('.mainTile:eq(' + (calculatePosition) + ')').hasClass(w.cssClass)) {
@@ -170,9 +161,17 @@ function checkForWeapons(calculatePosition, characterWeaponPoint, characterWeapo
             $(characterWeaponPoint).text(w.scarePoint);
             $(characterWeaponName).text(w.name);
             if (calculatePosition === veggies.calculatePosition()) {
+        
+                oldWeaponVeggie = veggies.currentWeapon;
                 $(veggies.bigImgID).attr("src", w.veggieWithWeaponSrc);
+                // if (oldWeapon !== "" && oldWeapon !== undefined){
+                //     $('.mainTile:eq(' + (calculatePosition) + ')').addClass(oldWeapon.cssClass).addClass("weapon");
+                //     $('.mainTile:eq(' + (calculatePosition) + ')').attr("src", oldWeapon.src);
+                // }
+                veggies.currentWeapon = w;
             } else {
                 $(fruits.bigImgID).attr("src", w.fruitWithWeaponSrc);
+                fruits.currentWeapon = w;
             }
         }
 
@@ -224,27 +223,57 @@ function getAvailableTiles(characterPosition) {
 
 function selectAvailableTiles(characterPosition) {
     $.each((getAvailableTiles(characterPosition)), function () {
+       
+        $(this).css("box-sizing", "border-box");
 
-        // if (characterPosition === fruits.calculatePosition()) {
-        // $(this).mouseenter(function() {
-        //     $(this).attr("src", "img/fruits_move.png")
-        //   });
+        if (characterPosition === fruits.calculatePosition()) {
 
-        //   $(this).mouseleave(function() {
-        //     $(this).attr("src", 'img/dirtMainTile.png')
-        //   });
+            $(this).css("border", "2px solid rgba(212, 128, 28, 0.9)");
+        } else {
+            $(this).css("border", "2px solid rgba(19, 82, 19, 0.59)");
+        }
+        
+            $(this).mouseenter(function () {
+                if (characterPosition === fruits.calculatePosition()) {
+                $(this).attr("src", "img/fruits_move.png")
+                } else {
+                $(this).attr("src", "img/veggies_move.png") 
+                }
+            });
 
-        //   $(this).on('click', function() {
-        //     $(this).attr("src", fruits.src);
-        //     $(this).off("mouseenter");
-        //     $(this).off("mouseleave");
-        //   });
+            $(this).mouseleave(function () {
 
-        // }
-        this.css("border", "1px solid #ed2f30");
-        this.css("box-sizing", "border-box");
+                if ($(this).hasClass("weapon")) {
+                    that = $(this);
+                    $.each(weapons, function (index, w) {
+                        if (that.hasClass(w.cssClass)) {
+                            that.attr("src", w.src)
+                        };
+                    })
+                } else {
+                    $(this).attr("src", 'img/dirtMainTile.png')
+                }
+            });
+
+            $(this).on('click', function () {
+                if (characterPosition === fruits.calculatePosition()) {
+                $(this).attr("src", fruits.src);
+                
+                } else {
+                    $(this).attr("src", veggies.src);
+                    
+                }
+                // $(this).fadeIn(5000);
+                $.each((getAvailableTiles(characterPosition)), function () {
+                    $(this).off("mouseenter");
+                    $(this).off("mouseleave");
+                });
+
+            });
+    
+
     });
-};
+}
 
 function deselectAvailableTiles(characterPosition) {
     $.each((getAvailableTiles(characterPosition)), function () {
@@ -254,11 +283,8 @@ function deselectAvailableTiles(characterPosition) {
         let newPositionFruit = $('.mainTile:eq(' + $('.fruit').index('.mainTile') + ')');
         newPositionVeggie.css("border", "none");
         newPositionFruit.css("border", "none");
-
-
     });
 };
-
 
 /*-------------------------------------------------------------------------------
             MOVEMENT
@@ -270,22 +296,39 @@ function deselectAvailableTiles(characterPosition) {
  Does not recalculate character's position  */
 
 function characterMovement(calculatedPosition, src) {
-
+    
     $.each(getAvailableTiles(calculatedPosition), function () {
-
-
+        
         $(this).on('click', function () {
 
             //REMOVE EVENT LISTENERS
-            
+
             $.each(getAvailableTiles(calculatedPosition), function () {
                 $(this).off('click');
             });
             deselectAvailableTiles(calculatedPosition);
 
             //delete and add CSS classes based on the new position
+            if(calculatedPosition === veggies.calculatePosition()){
+            if (oldWeaponVeggie !== "" && oldWeaponVeggie !== undefined){
+                $('.mainTile:eq(' + (calculatedPosition) + ')').addClass(oldWeaponVeggie.cssClass).addClass("weapon");
+                $('.mainTile:eq(' + (calculatedPosition) + ')').attr("src", oldWeaponVeggie.src);
+                oldWeaponVeggie = "";
+                
+            } else {
+                $('.mainTile:eq(' + (calculatedPosition) + ')').attr('src', 'img/dirtMainTile.png');
+            };
+        };
 
-            $('.mainTile:eq(' + (calculatedPosition) + ')').attr('src', 'img/dirtMainTile.png');
+            // if ($('.mainTile:eq(' + (calculatedPosition) + ')').hasClass("weapon")){
+            //     if(calculatedPosition === veggies.calculatePosition()){
+            //         $('.mainTile:eq(' + (calculatedPosition) + ')').attr('src', veggies.currentWeapon.src);
+            //     } else {
+            //         $('.mainTile:eq(' + (calculatedPosition) + ')').attr('src', fruits.currentWeapon.src);
+            //     }
+            // 
+
+           
             $('.mainTile:eq(' + (calculatedPosition) + ')').removeClass("character fruit veggie occupiedTile");
             $(this).attr('src', src);
             $(this).addClass("character occupiedTile");
@@ -294,7 +337,6 @@ function characterMovement(calculatedPosition, src) {
                 $(this).addClass("fruit");
             } else {
                 $(this).addClass("veggie");
-
             }
 
             playerTurns();
@@ -310,12 +352,9 @@ function playerTurns() {
         selectAvailableTiles(veggies.calculatePosition());
         characterMovement(veggies.calculatePosition(), veggieSrc);
 
-
-
         veggies.activePlayer = false; //TODO - fix activeplayer to update based on the actual active player
 
     } else {
-
         checkForWeapons(veggies.calculatePosition(), '#veggieWeaponPoint', '#veggieWeaponName');
         selectAvailableTiles(fruits.calculatePosition());
         characterMovement(fruits.calculatePosition(), fruitSrc);
