@@ -84,11 +84,11 @@ function changeTilesWeapons() {
 ---------------------------------------------------------------------------------*/
 
 class Character {
-    constructor(src, bigImgID, confidenceLevel, activePlayer, currentWeapon) {
+    constructor(src, bigImgID, confidenceLevel, currentWeapon) {
         this.src = src;
         this.bigImgID = bigImgID;
         this.cofidenceLevel = confidenceLevel;
-        this.activePlayer = activePlayer;
+        
         this.currentWeapon = currentWeapon;
     }
 
@@ -101,9 +101,9 @@ class Character {
     };
 };
 
-let fruits = new Character(fruitSrc, '#bigFruitPic', 100, false, "");
+let fruits = new Character(fruitSrc, '#bigFruitPic', 100, "");
 
-let veggies = new Character(veggieSrc, '#bigVeggiePic', 100, true, "");
+let veggies = new Character(veggieSrc, '#bigVeggiePic', 100, "");
 
 class Weapon {
     constructor(name, src, scarePoint, cssClass, veggieWithWeaponSrc, fruitWithWeaponSrc) {
@@ -154,12 +154,11 @@ function getAvailableTiles(characterPosition) {
 
 
     availableTiles = [];
-    availableTilesRight = [];
+   
 
     let i = 1;
     while (!((characterPosition + i) % COLUMNS === 0) && !($('.mainTile:eq(' + (characterPosition + i) + ')').hasClass("occupiedTile")) && i <= 3) {
         availableTiles.push($('.mainTile:eq(' + (characterPosition + i) + ')'));
-        availableTilesRight.push($('.mainTile:eq(' + (characterPosition + i) + ')'));
         i++;
     }
 
@@ -228,20 +227,16 @@ function selectAvailableTiles(characterPosition) {
 
             }
             // $(this).fadeIn(5000);
-            $.each((getAvailableTiles(characterPosition)), function () {
-                $(this).off("mouseenter");
-                $(this).off("mouseleave");
-            });
-
         });
-
-
     });
 }
 
 function deselectAvailableTiles(characterPosition) {
     $.each((getAvailableTiles(characterPosition)), function () {
+        $(this).off('click');
         $(this).css("border", "none");
+        $(this).off("mouseenter");
+        $(this).off("mouseleave");
 
         let newPositionVeggie = $('.mainTile:eq(' + $('.veggie').index('.mainTile') + ')');
         let newPositionFruit = $('.mainTile:eq(' + $('.fruit').index('.mainTile') + ')');
@@ -277,6 +272,10 @@ function checkForWeapons(calculatePosition, characterWeaponPoint, characterWeapo
 
     });
 };
+
+// function changeWeaponOnTile() {
+
+// }
 /*-------------------------------------------------------------------------------
             MOVEMENT
 ---------------------------------------------------------------------------------*/
@@ -291,14 +290,11 @@ function characterMovement(calculatedPosition, src) {
     $.each(getAvailableTiles(calculatedPosition), function () {
 
         $(this).on('click', function () {
-
+            
             //REMOVE EVENT LISTENERS
 
-            $.each(getAvailableTiles(calculatedPosition), function () {
-                $(this).off('click');
-            });
             deselectAvailableTiles(calculatedPosition);
-
+            console.log($(this));
             //delete and add CSS classes based on the new position
 
             if (calculatedPosition === veggies.calculatePosition()) {
@@ -338,18 +334,16 @@ function characterMovement(calculatedPosition, src) {
 
 function playerTurns() {
 
-    if (veggies.activePlayer) {
+    
         checkForWeapons(fruits.calculatePosition(), '#fruitWeaponPoint', '#fruitWeaponName');
         selectAvailableTiles(veggies.calculatePosition());
         characterMovement(veggies.calculatePosition(), veggieSrc);
 
-        veggies.activePlayer = false; //TODO - fix activeplayer to update based on the actual active player
+//     } else {
+//         checkForWeapons(veggies.calculatePosition(), '#veggieWeaponPoint', '#veggieWeaponName');
+//         selectAvailableTiles(fruits.calculatePosition());
+//         characterMovement(fruits.calculatePosition(), fruitSrc);
 
-    } else {
-        checkForWeapons(veggies.calculatePosition(), '#veggieWeaponPoint', '#veggieWeaponName');
-        selectAvailableTiles(fruits.calculatePosition());
-        characterMovement(fruits.calculatePosition(), fruitSrc);
-
-        veggies.activePlayer = true;
-    }
+       
+//     }
 };
