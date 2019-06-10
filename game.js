@@ -18,8 +18,6 @@ const SQUARE = $("<div />", {
 let fruitSrc = "img/fruits2.png";
 let veggieSrc = "img/veggies.png";
 let weapons = [];
-let oldWeaponVeggie = "";
-let oldWeaponFruit = "";
 
 /*-------------------------------------------------------------------------------
                 DOCUMENT READY - called when the document is loaded
@@ -38,7 +36,7 @@ $(document).ready(function () {
     changeTilesWeapons();
     addCharacters();
 
-    playerTurns();
+    prepareForTurn(veggies);
 
 });
 
@@ -84,26 +82,28 @@ function changeTilesWeapons() {
 ---------------------------------------------------------------------------------*/
 
 class Character {
-    constructor(src, bigImgID, confidenceLevel, currentWeapon) {
+    constructor(src, cssClass, bigImgID, borderStyle, moveImgSrc) {
         this.src = src;
+        this.cssClass = cssClass;
         this.bigImgID = bigImgID;
-        this.cofidenceLevel = confidenceLevel;
-        
-        this.currentWeapon = currentWeapon;
+        this.cofidenceLevel = 100;
+        this.currentWeapon = "";
+        this.oldWeapon = "";
+        this.borderStyle = borderStyle;
+        this.moveImgSrc = moveImgSrc;
+
     }
 
     calculatePosition() {
-        if (this.src === fruitSrc) {
-            return ($('.fruit').index('.mainTile'));
-        } else {
-            return ($('.veggie').index('.mainTile'));
-        }
+        return ($("." + this.cssClass).index('.mainTile'));
     };
 };
 
-let fruits = new Character(fruitSrc, '#bigFruitPic', 100, "");
+let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "2px solid rgba(212, 128, 28, 0.9)", "img/fruits_move.png");
 
-let veggies = new Character(veggieSrc, '#bigVeggiePic', 100, "");
+let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png");
+
+let activePlayer = veggies;
 
 class Weapon {
     constructor(name, src, scarePoint, cssClass, veggieWithWeaponSrc, fruitWithWeaponSrc) {
@@ -125,8 +125,8 @@ let caterpillar = new Weapon("Caterpillar", "img/caterpillar.png", 25, "caterpil
 
 
 function addCharacters() {
-    $(selectRandomTile()).attr('src', fruitSrc).addClass("occupiedTile character fruit");
-    $(selectRandomTile()).attr('src', veggieSrc).addClass("occupiedTile character veggie");
+    $(selectRandomTile()).attr('src', fruitSrc).addClass("occupiedTile character fruits");
+    $(selectRandomTile()).attr('src', veggieSrc).addClass("occupiedTile character veggies");
 
 };
 
@@ -154,7 +154,7 @@ function getAvailableTiles(characterPosition) {
 
 
     availableTiles = [];
-   
+
 
     let i = 1;
     while (!((characterPosition + i) % COLUMNS === 0) && !($('.mainTile:eq(' + (characterPosition + i) + ')').hasClass("occupiedTile")) && i <= 3) {
@@ -184,28 +184,18 @@ function getAvailableTiles(characterPosition) {
 };
 
 
-function selectAvailableTiles(characterPosition) {
-    $.each((getAvailableTiles(characterPosition)), function () {
+function selectAvailableTiles(player) {
+
+    $.each((getAvailableTiles(player.calculatePosition())), function () {
 
         $(this).css("box-sizing", "border-box");
-
-        if (characterPosition === fruits.calculatePosition()) {
-
-            $(this).css("border", "2px solid rgba(212, 128, 28, 0.9)");
-        } else {
-            $(this).css("border", "2px solid rgba(19, 82, 19, 0.59)");
-        }
+        $(this).css("border", player.borderStyle);
 
         $(this).mouseenter(function () {
-            if (characterPosition === fruits.calculatePosition()) {
-                $(this).attr("src", "img/fruits_move.png")
-            } else {
-                $(this).attr("src", "img/veggies_move.png")
-            }
+            $(this).attr("src", player.moveImgSrc);
         });
 
         $(this).mouseleave(function () {
-
             if ($(this).hasClass("weapon")) {
                 that = $(this);
                 $.each(weapons, function (index, w) {
@@ -219,13 +209,8 @@ function selectAvailableTiles(characterPosition) {
         });
 
         $(this).on('click', function () {
-            if (characterPosition === fruits.calculatePosition()) {
-                $(this).attr("src", fruits.src);
+            $(this).attr("src", player.src);
 
-            } else {
-                $(this).attr("src", veggies.src);
-
-            }
             // $(this).fadeIn(5000);
         });
     });
@@ -238,8 +223,8 @@ function deselectAvailableTiles(characterPosition) {
         $(this).off("mouseenter");
         $(this).off("mouseleave");
 
-        let newPositionVeggie = $('.mainTile:eq(' + $('.veggie').index('.mainTile') + ')');
-        let newPositionFruit = $('.mainTile:eq(' + $('.fruit').index('.mainTile') + ')');
+        let newPositionVeggie = $('.mainTile:eq(' + $('.veggies').index('.mainTile') + ')');
+        let newPositionFruit = $('.mainTile:eq(' + $('.fruits').index('.mainTile') + ')');
         newPositionVeggie.css("border", "none");
         newPositionFruit.css("border", "none");
     });
@@ -285,65 +270,48 @@ function checkForWeapons(calculatePosition, characterWeaponPoint, characterWeapo
  to the new tile and changing img src-s and css classes accordingly
  Does not recalculate character's position  */
 
-function characterMovement(calculatedPosition, src) {
+function addClickHandlerToAvailableTiles(player) {
 
-    $.each(getAvailableTiles(calculatedPosition), function () {
+    $.each(getAvailableTiles(player.calculatePosition()), function () {
 
         $(this).on('click', function () {
-            
+
             //REMOVE EVENT LISTENERS
 
-            deselectAvailableTiles(calculatedPosition);
-            console.log($(this));
+            deselectAvailableTiles(player.calculatePosition());
+
             //delete and add CSS classes based on the new position
 
-            if (calculatedPosition === veggies.calculatePosition()) {
-                if (oldWeaponVeggie !== "" && oldWeaponVeggie !== undefined) {
-                    $('.mainTile:eq(' + (calculatedPosition) + ')').addClass(oldWeaponVeggie.cssClass).addClass("weapon");
-                    $('.mainTile:eq(' + (calculatedPosition) + ')').attr("src", oldWeaponVeggie.src);
-                    oldWeaponVeggie = "";
-                } else {
-                    $('.mainTile:eq(' + (calculatedPosition) + ')').attr('src', 'img/dirtMainTile.png');
-                }
+            if (player.oldWeapon !== "") {
+                $('.mainTile:eq(' + (player.calculatePosition()) + ')').addClass(player.oldWeapon.cssClass).addClass("weapon");
+                $('.mainTile:eq(' + (player.calculatePosition()) + ')').attr("src", player.oldWeapon.src);
+                player.oldWeapon = "";
             } else {
-                if (oldWeaponFruit !== "" && oldWeaponFruit !== undefined) {
-                    $('.mainTile:eq(' + (calculatedPosition) + ')').addClass(oldWeaponFruit.cssClass).addClass("weapon");
-                    $('.mainTile:eq(' + (calculatedPosition) + ')').attr("src", oldWeaponFruit.src);
-                    oldWeaponFruit = "";
-
-                } else {
-                    $('.mainTile:eq(' + (calculatedPosition) + ')').attr('src', 'img/dirtMainTile.png');
-                }
+                $('.mainTile:eq(' + (player.calculatePosition()) + ')').attr('src', 'img/dirtMainTile.png');
             }
 
-            $('.mainTile:eq(' + (calculatedPosition) + ')').removeClass("character fruit veggie occupiedTile");
-            $(this).attr('src', src);
+            $('.mainTile:eq(' + (player.calculatePosition()) + ')').removeClass("character fruits veggies occupiedTile");
+            $(this).attr('src', player.src);
             $(this).addClass("character occupiedTile");
+            $(this).addClass(player.cssClass);
 
-            if (src === fruitSrc) {
-                $(this).addClass("fruit");
-            } else {
-                $(this).addClass("veggie");
-            }
-
-            playerTurns();
+            endPlayerTurn();
+            prepareForTurn(activePlayer);
         });
     });
 };
 
 
-function playerTurns() {
+function prepareForTurn(player) {
 
-    
-        checkForWeapons(fruits.calculatePosition(), '#fruitWeaponPoint', '#fruitWeaponName');
-        selectAvailableTiles(veggies.calculatePosition());
-        characterMovement(veggies.calculatePosition(), veggieSrc);
-
-//     } else {
-//         checkForWeapons(veggies.calculatePosition(), '#veggieWeaponPoint', '#veggieWeaponName');
-//         selectAvailableTiles(fruits.calculatePosition());
-//         characterMovement(fruits.calculatePosition(), fruitSrc);
-
-       
-//     }
+    selectAvailableTiles(player);
+    addClickHandlerToAvailableTiles(player);
 };
+
+function endPlayerTurn() {
+    if (activePlayer === veggies) {
+        activePlayer = fruits;
+    } else {
+        activePlayer = veggies;
+    }
+}
