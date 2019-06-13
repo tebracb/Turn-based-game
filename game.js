@@ -82,10 +82,12 @@ function changeTilesWeapons() {
 ---------------------------------------------------------------------------------*/
 
 class Character {
-    constructor(src, cssClass, bigImgID, borderStyle, moveImgSrc) {
+    constructor(src, cssClass, bigImgID, weaponName, weaponPoint, borderStyle, moveImgSrc) {
         this.src = src;
         this.cssClass = cssClass;
         this.bigImgID = bigImgID;
+        this.weaponName = weaponName;
+        this.weaponPoint = weaponPoint;
         this.cofidenceLevel = 100;
         this.currentWeapon = "";
         this.oldWeapon = "";
@@ -99,9 +101,9 @@ class Character {
     };
 };
 
-let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "2px solid rgba(212, 128, 28, 0.9)", "img/fruits_move.png");
+let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "#fruitWeaponName", "#fruitWeaponPoint", "2px solid rgba(212, 128, 28, 0.9)", "img/fruits_move.png");
 
-let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png");
+let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "#veggieWeaponName", "#veggieWeaponPoint", "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png");
 
 let activePlayer = veggies;
 
@@ -235,21 +237,26 @@ function deselectAvailableTiles(characterPosition) {
             WEAPON FUNCTIONALITY
 ---------------------------------------------------------------------------------*/
 
-function checkForWeapons(calculatePosition, characterWeaponPoint, characterWeaponName) {
+function checkForWeapons(player) {
 
 
     $.each(weapons, function (index, w) {
-        if ($('.mainTile:eq(' + (calculatePosition) + ')').hasClass(w.cssClass)) {
-            $('.mainTile:eq(' + (calculatePosition) + ')').removeClass(w.cssClass).removeClass("weapon");
-            $(characterWeaponPoint).text(w.scarePoint);
-            $(characterWeaponName).text(w.name);
-            if (calculatePosition === veggies.calculatePosition()) {
+        if ($('.mainTile:eq(' + (player.calculatePosition()) + ')').hasClass(w.cssClass)) {
+            $('.mainTile:eq(' + (player.calculatePosition()) + ')').removeClass(w.cssClass).removeClass("weapon");
+          
+            $(player.weaponName).text(w.name);
+            $(player.weaponPoint).text(w.scarePoint);
 
-                oldWeaponVeggie = veggies.currentWeapon;
+            player.oldWeapon = player.currentWeapon;
+            
+
+            if (player === veggies) {
+
+               
                 $(veggies.bigImgID).attr("src", w.veggieWithWeaponSrc);
                 veggies.currentWeapon = w;
             } else {
-                oldWeaponFruit = fruits.currentWeapon;
+               
                 $(fruits.bigImgID).attr("src", w.fruitWithWeaponSrc);
                 fruits.currentWeapon = w;
             }
@@ -295,6 +302,7 @@ function addClickHandlerToAvailableTiles(player) {
             $(this).addClass("character occupiedTile");
             $(this).addClass(player.cssClass);
 
+            checkForWeapons(player);
             endPlayerTurn();
             prepareForTurn(activePlayer);
         });
