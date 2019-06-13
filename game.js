@@ -237,26 +237,27 @@ function deselectAvailableTiles(characterPosition) {
             WEAPON FUNCTIONALITY
 ---------------------------------------------------------------------------------*/
 
-function checkForWeapons(player) {
+function checkForWeapons(player, position, i) {
 
 
     $.each(weapons, function (index, w) {
-        if ($('.mainTile:eq(' + (player.calculatePosition()) + ')').hasClass(w.cssClass)) {
-            $('.mainTile:eq(' + (player.calculatePosition()) + ')').removeClass(w.cssClass).removeClass("weapon");
-          
+
+        //new code - i added
+
+        if ($('.mainTile:eq(' + (position + i) + ')').hasClass(w.cssClass)) {
+            $('.mainTile:eq(' + (position + i) + ')').removeClass(w.cssClass).removeClass("weapon");
+
             $(player.weaponName).text(w.name);
             $(player.weaponPoint).text(w.scarePoint);
 
             player.oldWeapon = player.currentWeapon;
-            
+
 
             if (player === veggies) {
-
-               
                 $(veggies.bigImgID).attr("src", w.veggieWithWeaponSrc);
                 veggies.currentWeapon = w;
+
             } else {
-               
                 $(fruits.bigImgID).attr("src", w.fruitWithWeaponSrc);
                 fruits.currentWeapon = w;
             }
@@ -281,7 +282,13 @@ function addClickHandlerToAvailableTiles(player) {
 
     $.each(getAvailableTiles(player.calculatePosition()), function () {
 
+
+
         $(this).on('click', function () {
+
+            //new code
+            oldPosition = player.calculatePosition();
+            //
 
             //REMOVE EVENT LISTENERS
 
@@ -302,7 +309,24 @@ function addClickHandlerToAvailableTiles(player) {
             $(this).addClass("character occupiedTile");
             $(this).addClass(player.cssClass);
 
-            checkForWeapons(player);
+            //new code
+            newPosition = ($(this).index('.mainTile'));
+            if ((newPosition - oldPosition) < 4 && (newPosition - oldPosition) > 0) {
+                for (i = 0; i <= (newPosition - oldPosition); i++) {
+                    checkForWeapons(player, oldPosition, i);
+                }
+            } else if ((newPosition - oldPosition) < 0 && (newPosition - oldPosition) > -4) {
+                for (i = 0; i >= (newPosition - oldPosition); i--) {
+                    checkForWeapons(player, oldPosition, i)
+                }
+            } else if ((newPosition - oldPosition) >= COLUMNS) {
+                // for (i = 10; i >= (newPosition - oldPosition); i++)
+                //     checkForWeapons(player, oldPosition, i)
+            } else {
+                console.log('up')
+            }
+
+            // checkForWeapons(player);
             endPlayerTurn();
             prepareForTurn(activePlayer);
         });
