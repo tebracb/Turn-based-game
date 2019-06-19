@@ -15,8 +15,8 @@ const SQUARE = $("<div />", {
     class: 'square'
 });
 
-let fruitSrc = "img/fruits2.png";
-let veggieSrc = "img/veggies.png";
+let fruitSrc = "img/fruits2.PNG";
+let veggieSrc = "img/veggies.PNG";
 let weapons = [];
 
 
