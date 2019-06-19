@@ -249,18 +249,23 @@ function checkForWeapons(player, position, i) {
 
             player.oldWeapon = player.currentWeapon;
 
-            $(player.weaponName).text(w.name);
-            $(player.weaponPoint).text(w.scarePoint);
-
             if (player.oldWeapon !== "") {
                 $('.mainTile:eq(' + (position + i) + ')').addClass(player.oldWeapon.cssClass).addClass("weapon");
                 $('.mainTile:eq(' + (position + i) + ')').attr("src", player.oldWeapon.src);
                 player.oldWeapon = "";
-            } else {
-                $('.mainTile:eq(' + (position + i) + ')').attr('src', 'img/dirtMainTile.png');
             }
+            //  else {
+            //     $('.mainTile:eq(' + (position + i) + ')').attr('src', 'img/dirtMainTile.png');
+            // }
+            
+          
 
+            $(player.weaponName).text(w.name);
+            $(player.weaponPoint).text(w.scarePoint);
+            
+          
 
+            
             if (player === veggies) {
                 $(veggies.bigImgID).attr("src", w.veggieWithWeaponSrc);
                 veggies.currentWeapon = w;
@@ -269,10 +274,11 @@ function checkForWeapons(player, position, i) {
                 $(fruits.bigImgID).attr("src", w.fruitWithWeaponSrc);
                 fruits.currentWeapon = w;
             }
+           return false;
 
           
         }
-
+    
     });
 };
 
@@ -314,7 +320,10 @@ function addClickHandlerToAvailableTiles(player) {
             //     $('.mainTile:eq(' + (player.calculatePosition()) + ')').attr('src', 'img/dirtMainTile.png');
             // }
 
-            $('.mainTile:eq(' + (player.calculatePosition()) + ')').removeClass("character fruits veggies occupiedTile");
+            $('.mainTile:eq(' + (oldPosition) + ')').removeClass("character fruits veggies occupiedTile");
+            
+            $('.mainTile:eq(' + (oldPosition) + ')').attr("src", 'img/dirtMainTile.png');
+
             $(this).attr('src', player.src);
             $(this).addClass("character occupiedTile");
             $(this).addClass(player.cssClass);
