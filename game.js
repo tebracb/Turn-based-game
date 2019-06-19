@@ -19,6 +19,7 @@ let fruitSrc = "img/fruits2.png";
 let veggieSrc = "img/veggies.png";
 let weapons = [];
 
+
 /*-------------------------------------------------------------------------------
                 DOCUMENT READY - called when the document is loaded
 ---------------------------------------------------------------------------------*/
@@ -105,6 +106,10 @@ let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "#fruitWeaponName
 
 let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "#veggieWeaponName", "#veggieWeaponPoint", "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png");
 
+
+
+
+
 let activePlayer = veggies;
 
 class Weapon {
@@ -132,17 +137,6 @@ function addCharacters() {
 
 };
 
-// $(availableTilesRight).each(function(i, obj) {
-// 	if ($(obj[i]).hasClass('weapon')){
-// 	$(obj[i]).css("border", "2px solid blue");
-// }})
-
-// function weaponRight (){
-// $(availableTilesRight).filter(function() {
-//     return $(this).hasClass("weapon");
-
-//     });
-// };
 
 /*-------------------------------------------------------------------------------
             SELECTED TILES
@@ -218,6 +212,9 @@ function selectAvailableTiles(player) {
     });
 }
 
+
+//REMOVE EVENT LISTENERS
+
 function deselectAvailableTiles(characterPosition) {
     $.each((getAvailableTiles(characterPosition)), function () {
         $(this).off('click');
@@ -252,20 +249,15 @@ function checkForWeapons(player, position, i) {
             if (player.oldWeapon !== "") {
                 $('.mainTile:eq(' + (position + i) + ')').addClass(player.oldWeapon.cssClass).addClass("weapon");
                 $('.mainTile:eq(' + (position + i) + ')').attr("src", player.oldWeapon.src);
-                player.oldWeapon = "";
+                // player.oldWeapon = "";
+            } else {
+                $('.mainTile:eq(' + (position + i) + ')').attr('src', 'img/dirtMainTile.png');
             }
-            //  else {
-            //     $('.mainTile:eq(' + (position + i) + ')').attr('src', 'img/dirtMainTile.png');
-            // }
-            
-          
+
 
             $(player.weaponName).text(w.name);
             $(player.weaponPoint).text(w.scarePoint);
-            
-          
 
-            
             if (player === veggies) {
                 $(veggies.bigImgID).attr("src", w.veggieWithWeaponSrc);
                 veggies.currentWeapon = w;
@@ -274,11 +266,9 @@ function checkForWeapons(player, position, i) {
                 $(fruits.bigImgID).attr("src", w.fruitWithWeaponSrc);
                 fruits.currentWeapon = w;
             }
-           return false;
-
-          
+            return false;
         }
-    
+
     });
 };
 
@@ -302,58 +292,56 @@ function addClickHandlerToAvailableTiles(player) {
 
         $(this).on('click', function () {
 
-            //new code
+    
             oldPosition = player.calculatePosition();
-            //
+            newPosition = ($(this).index('.mainTile'));
 
-            //REMOVE EVENT LISTENERS
-
-            deselectAvailableTiles(player.calculatePosition());
+            deselectAvailableTiles(oldPosition);
 
             //delete and add CSS classes based on the new position
 
-            // if (player.oldWeapon !== "") {
-            //     $('.mainTile:eq(' + (player.calculatePosition()) + ')').addClass(player.oldWeapon.cssClass).addClass("weapon");
-            //     $('.mainTile:eq(' + (player.calculatePosition()) + ')').attr("src", player.oldWeapon.src);
-            //     player.oldWeapon = "";
-            // } else {
-            //     $('.mainTile:eq(' + (player.calculatePosition()) + ')').attr('src', 'img/dirtMainTile.png');
-            // }
 
             $('.mainTile:eq(' + (oldPosition) + ')').removeClass("character fruits veggies occupiedTile");
-            
-            $('.mainTile:eq(' + (oldPosition) + ')').attr("src", 'img/dirtMainTile.png');
+
+            if ($('.mainTile:eq(' + (oldPosition) + ')').hasClass('weapon') && (player.oldWeapon !== "")) {
+                $('.mainTile:eq(' + (oldPosition) + ')').attr("src", player.oldWeapon.src);
+            } else {
+
+                $('.mainTile:eq(' + (oldPosition) + ')').attr("src", 'img/dirtMainTile.png'); // check if it's a weapon and set it to the weapon if it is
+            }
+          
+            //
+
+            //RIGHT
+            if ((newPosition - oldPosition) < 4 && (newPosition - oldPosition) > 0) {
+                for (i = 1; i <= (newPosition - oldPosition); i++) {
+                    checkForWeapons(player, oldPosition, i); //pass in oldPosition + i to the function
+                }
+
+                //LEFT
+            } else if ((newPosition - oldPosition) < 0 && (newPosition - oldPosition) > -4) {
+                for (i = -1; i >= (newPosition - oldPosition); i--) {
+                    checkForWeapons(player, oldPosition, i)
+                }
+
+                //DOWN
+            } else if ((newPosition - oldPosition) >= COLUMNS) {
+                for (i = COLUMNS; i <= (newPosition - oldPosition); i += COLUMNS) {
+                    checkForWeapons(player, oldPosition, i)
+                }
+
+                //UP
+            } else {
+                for (i = -COLUMNS; i >= (newPosition - oldPosition); i -= COLUMNS) {
+                    checkForWeapons(player, oldPosition, i)
+                }
+            }
+
 
             $(this).attr('src', player.src);
             $(this).addClass("character occupiedTile");
             $(this).addClass(player.cssClass);
 
-            //new code
-            newPosition = ($(this).index('.mainTile'));
-            //RIGHT
-            if ((newPosition - oldPosition) < 4 && (newPosition - oldPosition) > 0) {
-                for (i = 1; i <= (newPosition - oldPosition); i++) {
-                    checkForWeapons(player, oldPosition, i);
-                }
-
-            //LEFT
-            } else if ((newPosition - oldPosition) < 0 && (newPosition - oldPosition) > -4) {
-                for (i = -1; i >= (newPosition - oldPosition); i--) {
-                    checkForWeapons(player, oldPosition, i)
-                }
-            
-            //DOWN
-            } else if ((newPosition - oldPosition) >= COLUMNS) {
-                for (i = COLUMNS; i <= (newPosition - oldPosition); i+=COLUMNS) {
-                    checkForWeapons(player, oldPosition, i)
-            }
-
-            //UP
-            } else {
-                for (i = -COLUMNS; i >= (newPosition - oldPosition); i-=COLUMNS) {
-                checkForWeapons(player, oldPosition, i)
-            }
-        }
 
             // checkForWeapons(player);
             endPlayerTurn();
@@ -375,4 +363,19 @@ function endPlayerTurn() {
     } else {
         activePlayer = veggies;
     }
+}
+
+function fight() {
+    $('#gameboard').fadeOut(1000);
+    $('#player1').append('<button id=veggieAttackBtn>Attack</button>');
+    $('#player2').append('<button id=veggieAttackBtn>Attack</button>');
+
+    $('#veggieAttackBtn').on('click', function() {
+
+        if(veggies.currentWeapon === ""){
+        $('#fruitsConfidenceLevel').text(" " + (fruits.cofidenceLevel-10));
+        } else{
+        $('#fruitsConfidenceLevel').text(" " + (fruits.cofidenceLevel-veggies.currentWeapon.scarePoint));
+        }
+    })
 }
