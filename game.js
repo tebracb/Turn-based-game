@@ -83,34 +83,38 @@ function changeTilesWeapons() {
 ---------------------------------------------------------------------------------*/
 
 class Character {
-    constructor(src, cssClass, bigImgID, weaponName, weaponPoint, borderStyle, moveImgSrc) {
+    constructor(src, cssClass, bigImgID, weaponName, weaponPoint, confidenceLevelDisplay, borderStyle, moveImgSrc, attackButton) {
         this.src = src;
         this.cssClass = cssClass;
         this.bigImgID = bigImgID;
         this.weaponName = weaponName;
         this.weaponPoint = weaponPoint;
         this.cofidenceLevel = 100;
+        this.confidenceLevelDisplay = confidenceLevelDisplay;
         this.currentWeapon = "";
         this.oldWeapon = "";
         this.borderStyle = borderStyle;
         this.moveImgSrc = moveImgSrc;
+        this.attackButton = attackButton;
 
     }
 
     calculatePosition() {
         return ($("." + this.cssClass).index('.mainTile'));
     };
+
 };
 
-let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "#fruitWeaponName", "#fruitWeaponPoint", "2px solid rgba(212, 128, 28, 0.9)", "img/fruits_move.png");
+let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "#fruitWeaponName", "#fruitWeaponPoint", "#fruitsConfidenceLevel", "2px solid rgba(212, 128, 28, 0.9)", "img/fruits_move.png", '#fruitAttackBtn');
 
-let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "#veggieWeaponName", "#veggieWeaponPoint", "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png");
+let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "#veggieWeaponName", "#veggieWeaponPoint", "#veggieConfidenceLevel", "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png", '#veggieAttackBtn');
 
-
-
+//???
+// $('#fruitsConfidenceLevel').text(" " +fruits.cofidenceLevel);
 
 
 let activePlayer = veggies;
+let passivePlayer = fruits;
 
 class Weapon {
     constructor(name, src, scarePoint, cssClass, veggieWithWeaponSrc, fruitWithWeaponSrc) {
@@ -341,9 +345,14 @@ function addClickHandlerToAvailableTiles(player) {
             $(this).attr('src', player.src);
             $(this).addClass("character occupiedTile");
             $(this).addClass(player.cssClass);
+            
 
-
-            // checkForWeapons(player);
+            if((newPosition-passivePlayer.calculatePosition()) === 10 || (newPosition-passivePlayer.calculatePosition()) === -10
+            ||(newPosition-passivePlayer.calculatePosition()) === 1 ||(newPosition-passivePlayer.calculatePosition()) === -1) {
+                changeUI();
+                return;
+            }
+            
             endPlayerTurn();
             prepareForTurn(activePlayer);
         });
@@ -360,22 +369,69 @@ function prepareForTurn(player) {
 function endPlayerTurn() {
     if (activePlayer === veggies) {
         activePlayer = fruits;
+        passivePlayer = veggies;
     } else {
         activePlayer = veggies;
+        passivePlayer = fruits;
     }
 }
 
-function fight() {
+function changeUI () {
     $('#gameboard').fadeOut(1000);
     $('#player1').append('<button id=veggieAttackBtn>Attack</button>');
-    $('#player2').append('<button id=veggieAttackBtn>Attack</button>');
+    $('#player2').append('<button id=fruitAttackBtn>Attack</button>');
+    endPlayerTurn();
+    fight(activePlayer);
 
-    $('#veggieAttackBtn').on('click', function() {
-
-        if(veggies.currentWeapon === ""){
-        $('#fruitsConfidenceLevel').text(" " + (fruits.cofidenceLevel-10));
-        } else{
-        $('#fruitsConfidenceLevel').text(" " + (fruits.cofidenceLevel-veggies.currentWeapon.scarePoint));
-        }
-    })
 }
+
+function fight(player) {
+ 
+
+    $(player.attackButton).on('click', function() {
+
+        
+         console.log (passivePlayer)
+         $(player.bigImgID).removeClass('shake');
+
+        if (player.currentWeapon === "") {
+            passivePlayer.cofidenceLevel -= 10;
+        } else {
+            passivePlayer.cofidenceLevel -= player.currentWeapon.scarePoint
+        }
+
+        $(passivePlayer.confidenceLevelDisplay).text(" " +passivePlayer.cofidenceLevel);
+
+        $(passivePlayer.bigImgID).addClass('shake');
+
+        if(passivePlayer.cofidenceLevel <= 0) {
+            alert("Game over, the winner is " + activePlayer.cssClass);
+        }
+        $(player.attackButton).off('click');
+        
+        endPlayerTurn();
+        fight(activePlayer);
+    })
+    
+};
+
+// function fight() {
+   
+//     $('#veggieAttackBtn').on('click', function() {
+
+//         if (veggies.currentWeapon === ""){
+//             fruits.cofidenceLevel -= 10;
+//         } else {
+//             fruits.cofidenceLevel -= veggies.currentWeapon.scarePoint
+//         }
+
+//         $('#fruitsConfidenceLevel').text(" " +fruits.cofidenceLevel);
+
+//         $('#bigFruitPic').addClass('shake');
+
+//         if(fruits.cofidenceLevel <= 0) {
+//             alert("Game over");
+//         }
+        
+//     })
+// };
