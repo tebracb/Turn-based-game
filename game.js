@@ -83,7 +83,8 @@ function changeTilesWeapons() {
 ---------------------------------------------------------------------------------*/
 
 class Character {
-    constructor(src, cssClass, bigImgID, weaponName, weaponPoint, confidenceLevelDisplay, borderStyle, moveImgSrc, attackButton) {
+    constructor(src, cssClass, bigImgID, weaponName, weaponPoint, confidenceLevelDisplay, borderStyle, 
+        moveImgSrc, winImgSrc, attackButton, defendButton, isDefending) {
         this.src = src;
         this.cssClass = cssClass;
         this.bigImgID = bigImgID;
@@ -95,7 +96,10 @@ class Character {
         this.oldWeapon = "";
         this.borderStyle = borderStyle;
         this.moveImgSrc = moveImgSrc;
+        this.winImgSrc = winImgSrc;
         this.attackButton = attackButton;
+        this.defendButton = defendButton;
+        this.isDefending = isDefending;
 
     }
 
@@ -105,9 +109,11 @@ class Character {
 
 };
 
-let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "#fruitWeaponName", "#fruitWeaponPoint", "#fruitsConfidenceLevel", "2px solid rgba(212, 128, 28, 0.9)", "img/fruits_move.png", '#fruitAttackBtn');
+let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "#fruitWeaponName", "#fruitWeaponPoint", "#fruitsConfidenceLevel",
+    "2px solid rgba(212, 128, 28, 0.9)", "img/fruits_move.png", "img/fruits_win.PNG", '#fruitAttackBtn', '#fruitDefendBtn', false);
 
-let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "#veggieWeaponName", "#veggieWeaponPoint", "#veggieConfidenceLevel", "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png", '#veggieAttackBtn');
+let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "#veggieWeaponName", "#veggieWeaponPoint", "#veggieConfidenceLevel",
+    "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png", "img/veggies_win.PNG", '#veggieAttackBtn', '#veggieDefendBtn', false);
 
 //???
 // $('#fruitsConfidenceLevel').text(" " +fruits.cofidenceLevel);
@@ -296,7 +302,7 @@ function addClickHandlerToAvailableTiles(player) {
 
         $(this).on('click', function () {
 
-    
+
             oldPosition = player.calculatePosition();
             newPosition = ($(this).index('.mainTile'));
 
@@ -313,7 +319,7 @@ function addClickHandlerToAvailableTiles(player) {
 
                 $('.mainTile:eq(' + (oldPosition) + ')').attr("src", 'img/dirtMainTile.png'); // check if it's a weapon and set it to the weapon if it is
             }
-          
+
             //
 
             //RIGHT
@@ -345,14 +351,14 @@ function addClickHandlerToAvailableTiles(player) {
             $(this).attr('src', player.src);
             $(this).addClass("character occupiedTile");
             $(this).addClass(player.cssClass);
-            
 
-            if((newPosition-passivePlayer.calculatePosition()) === 10 || (newPosition-passivePlayer.calculatePosition()) === -10
-            ||(newPosition-passivePlayer.calculatePosition()) === 1 ||(newPosition-passivePlayer.calculatePosition()) === -1) {
+
+            if ((newPosition - passivePlayer.calculatePosition()) === 10 || (newPosition - passivePlayer.calculatePosition()) === -10 ||
+                (newPosition - passivePlayer.calculatePosition()) === 1 || (newPosition - passivePlayer.calculatePosition()) === -1) {
                 changeUI();
                 return;
             }
-            
+
             endPlayerTurn();
             prepareForTurn(activePlayer);
         });
@@ -376,10 +382,17 @@ function endPlayerTurn() {
     }
 }
 
-function changeUI () {
+function changeUI() {
     $('#gameboard').fadeOut(1000);
     $('#player1').append('<button id=veggieAttackBtn>Scare</button>');
+    $('#player1').append('<button id=veggieDefendBtn>Hide</button>');
+
     $('#player2').append('<button id=fruitAttackBtn>Scare</button>');
+    $('#player2').append('<button id=fruitDefendBtn>Hide</button>');
+
+    $(veggies.bigImgID).css('float', 'right');
+    $(fruits.bigImgID).css('float', 'left');
+    
     endPlayerTurn();
     fight(activePlayer);
 
@@ -390,38 +403,63 @@ function changeUI () {
 //     $(player.bigImgID).animate({height: '+=20px', width:'+=20px'},500);
 
 //     $(passivePlayer.bigImgID).animate({height: '-=20px', width:'-=20px'},500);
- 
+
 // }
 
 function fight(player) {
- 
+
     $(player.bigImgID).addClass('grow');
     $(passivePlayer.bigImgID).removeClass('grow');
 
-    $(player.attackButton).on('click', function() {
-      
-         $(player.bigImgID).removeClass('shake');
-         
+    $(player.attackButton).on('click', function () {
+
+        $(player.bigImgID).removeClass('shake');
+
 
         if (player.currentWeapon === "") {
+            if (passivePlayer.isDefending === true) {
+            passivePlayer.cofidenceLevel -= (10/2);
+            passivePlayer.isDefending = false;
+            } else {
             passivePlayer.cofidenceLevel -= 10;
+            }
         } else {
+            if (passivePlayer.isDefending === true) {
+                passivePlayer.cofidenceLevel -= (player.currentWeapon.scarePoint / 2);
+                passivePlayer.isDefending = false;
+            } else {
             passivePlayer.cofidenceLevel -= player.currentWeapon.scarePoint
+            }
         }
 
-        $(passivePlayer.confidenceLevelDisplay).text(" " +passivePlayer.cofidenceLevel);
+        $(passivePlayer.confidenceLevelDisplay).text(" " + passivePlayer.cofidenceLevel);
 
         $(passivePlayer.bigImgID).addClass('shake');
 
-        if(passivePlayer.cofidenceLevel <= 0) {
+        if (passivePlayer.cofidenceLevel <= 0) {
+            $('#player1').fadeOut(1000);
+            $('#player2').fadeOut(1000);
             alert("Game over, the winner is " + activePlayer.cssClass);
+            $(activePlayer.winImgSrc).fadeIn(1000);
         }
         $(player.attackButton).off('click');
-        
-        // $(passivePlayer.bigImgID).animate({height: '-=20px', width:'-=20px'},500);
+        $(player.defendButton).off('click');
+
         endPlayerTurn();
         fight(activePlayer);
-    })
-    
+    });
+
+    $(player.defendButton).on('click', function () {
+        $(player.bigImgID).removeClass('shake');
+        player.isDefending = true;
+        $(player.defendButton).off('click');
+        $(player.attackButton).off('click');
+        endPlayerTurn();
+        fight(activePlayer);
+       
+    });
+
 };
 
+/*The player can choose to attack or defend against the next shot
+If the player chooses to defend themselves, they sustain 50% less damage than normal */
