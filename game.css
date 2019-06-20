@@ -111,3 +111,7 @@ h3{
     animation-name: shake;
     animation-duration: 1s; 
 }
+
+.grow {
+    transform: scale(1.2);
+}

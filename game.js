@@ -378,21 +378,30 @@ function endPlayerTurn() {
 
 function changeUI () {
     $('#gameboard').fadeOut(1000);
-    $('#player1').append('<button id=veggieAttackBtn>Attack</button>');
-    $('#player2').append('<button id=fruitAttackBtn>Attack</button>');
+    $('#player1').append('<button id=veggieAttackBtn>Scare</button>');
+    $('#player2').append('<button id=fruitAttackBtn>Scare</button>');
     endPlayerTurn();
     fight(activePlayer);
 
 }
 
+// function toggleSelection(player) {
+
+//     $(player.bigImgID).animate({height: '+=20px', width:'+=20px'},500);
+
+//     $(passivePlayer.bigImgID).animate({height: '-=20px', width:'-=20px'},500);
+ 
+// }
+
 function fight(player) {
  
+    $(player.bigImgID).addClass('grow');
+    $(passivePlayer.bigImgID).removeClass('grow');
 
     $(player.attackButton).on('click', function() {
-
-        
-         console.log (passivePlayer)
+      
          $(player.bigImgID).removeClass('shake');
+         
 
         if (player.currentWeapon === "") {
             passivePlayer.cofidenceLevel -= 10;
@@ -409,29 +418,10 @@ function fight(player) {
         }
         $(player.attackButton).off('click');
         
+        // $(passivePlayer.bigImgID).animate({height: '-=20px', width:'-=20px'},500);
         endPlayerTurn();
         fight(activePlayer);
     })
     
 };
 
-// function fight() {
-   
-//     $('#veggieAttackBtn').on('click', function() {
-
-//         if (veggies.currentWeapon === ""){
-//             fruits.cofidenceLevel -= 10;
-//         } else {
-//             fruits.cofidenceLevel -= veggies.currentWeapon.scarePoint
-//         }
-
-//         $('#fruitsConfidenceLevel').text(" " +fruits.cofidenceLevel);
-
-//         $('#bigFruitPic').addClass('shake');
-
-//         if(fruits.cofidenceLevel <= 0) {
-//             alert("Game over");
-//         }
-        
-//     })
-// };
