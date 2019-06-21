@@ -384,11 +384,12 @@ function endPlayerTurn() {
 
 function changeUI() {
     $('#gameboard').fadeOut(1000);
-    $('#player1').append('<button id=veggieAttackBtn>Scare</button>');
-    $('#player1').append('<button id=veggieDefendBtn>Hide</button>');
+    $('#player1').append('<div id=veggieBtnDiv><button id=veggieAttackBtn>Scare</button><button id=veggieDefendBtn>Hide</button></div>');
+    $('#player2').append('<div id=fruitBtnDiv><button id=fruitAttackBtn>Scare</button><button id=fruitDefendBtn>Hide</button></div>');
+    // $("#fruitBtnDiv").css("text-align", "left");
 
-    $('#player2').append('<button id=fruitAttackBtn>Scare</button>');
-    $('#player2').append('<button id=fruitDefendBtn>Hide</button>');
+    // $('#player2').append('<button id=fruitAttackBtn>Scare</button>');
+    // $('#player2').append('<button id=fruitDefendBtn>Hide</button>');
 
     $(veggies.bigImgID).css('float', 'right');
     $(fruits.bigImgID).css('float', 'left');
@@ -396,20 +397,30 @@ function changeUI() {
     endPlayerTurn();
     fight(activePlayer);
 
-}
+};
 
-// function toggleSelection(player) {
-
-//     $(player.bigImgID).animate({height: '+=20px', width:'+=20px'},500);
-
-//     $(passivePlayer.bigImgID).animate({height: '-=20px', width:'-=20px'},500);
-
-// }
 
 function fight(player) {
 
     $(player.bigImgID).addClass('grow');
     $(passivePlayer.bigImgID).removeClass('grow');
+
+    $(passivePlayer.attackButton).hide();
+    $(passivePlayer.defendButton).hide();
+
+    $(player.attackButton).show();
+    $(player.defendButton).show();
+
+        // $("h1").animate({
+        //     "display": "inline",
+        //     "border-bottom-width": "2px",
+        //     "border-color": "red"
+        // }, 2000);
+        // $(this).stop().animate({
+        //     "border-bottom-width": "0px",
+        //     "border-color" : ""
+        // }, 2000);
+    
 
     $(player.attackButton).on('click', function () {
 
@@ -440,7 +451,7 @@ function fight(player) {
             $('#player1').fadeOut(1000);
             $('#player2').fadeOut(1000);
             alert("Game over, the winner is " + activePlayer.cssClass);
-            $(activePlayer.winImgSrc).fadeIn(1000);
+            $('<img src =' + activePlayer.winImgSrc +'>').fadeIn(1000);
         }
         $(player.attackButton).off('click');
         $(player.defendButton).off('click');
