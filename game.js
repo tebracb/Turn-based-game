@@ -83,7 +83,7 @@ function changeTilesWeapons() {
 ---------------------------------------------------------------------------------*/
 
 class Character {
-    constructor(src, cssClass, bigImgID, weaponName, weaponPoint, confidenceLevelDisplay, borderStyle, 
+    constructor(src, cssClass, bigImgID, weaponName, weaponPoint, confidenceLevelDisplay, borderStyle,
         moveImgSrc, winImgSrc, attackButton, defendButton, isDefending) {
         this.src = src;
         this.cssClass = cssClass;
@@ -393,7 +393,7 @@ function changeUI() {
 
     $(veggies.bigImgID).css('float', 'right');
     $(fruits.bigImgID).css('float', 'left');
-    
+
     endPlayerTurn();
     fight(activePlayer);
 
@@ -411,35 +411,26 @@ function fight(player) {
     $(player.attackButton).show();
     $(player.defendButton).show();
 
-        // $("h1").animate({
-        //     "display": "inline",
-        //     "border-bottom-width": "2px",
-        //     "border-color": "red"
-        // }, 2000);
-        // $(this).stop().animate({
-        //     "border-bottom-width": "0px",
-        //     "border-color" : ""
-        // }, 2000);
-    
 
     $(player.attackButton).on('click', function () {
 
         $(player.bigImgID).removeClass('shake');
+        player.isDefending = false;
 
 
         if (player.currentWeapon === "") {
             if (passivePlayer.isDefending === true) {
-            passivePlayer.cofidenceLevel -= (10/2);
-            passivePlayer.isDefending = false;
+                passivePlayer.cofidenceLevel -= (10 / 2);
+                passivePlayer.isDefending = false;
             } else {
-            passivePlayer.cofidenceLevel -= 10;
+                passivePlayer.cofidenceLevel -= 10;
             }
         } else {
             if (passivePlayer.isDefending === true) {
                 passivePlayer.cofidenceLevel -= (player.currentWeapon.scarePoint / 2);
                 passivePlayer.isDefending = false;
             } else {
-            passivePlayer.cofidenceLevel -= player.currentWeapon.scarePoint
+                passivePlayer.cofidenceLevel -= player.currentWeapon.scarePoint
             }
         }
 
@@ -449,9 +440,13 @@ function fight(player) {
 
         if (passivePlayer.cofidenceLevel <= 0) {
             $('#player1').fadeOut(1000);
-            $('#player2').fadeOut(1000);
-            alert("Game over, the winner is " + activePlayer.cssClass);
-            $('<img src =' + activePlayer.winImgSrc +'>').fadeIn(1000);
+            $('#player2').fadeOut(1000, function () {
+                $('#main').css('display', 'block');
+                $(player.cssClass).css('text-transform', 'capitalize');
+                $('<div id=winnerImgDiv><img src =' + player.winImgSrc + ' width=400px></div>').hide().appendTo('#main').fadeIn(1500);
+                $('#main').append('<h1 id=winnerMessage>Congratulations, the winner is Team ' + player.cssClass + '!</h1>');
+            });
+
         }
         $(player.attackButton).off('click');
         $(player.defendButton).off('click');
@@ -467,7 +462,7 @@ function fight(player) {
         $(player.attackButton).off('click');
         endPlayerTurn();
         fight(activePlayer);
-       
+
     });
 
 };

@@ -65,8 +65,16 @@ font-family: Crayon;
 font-weight: normal;
 font-size: 1.15em;
 margin: 15px;
-
 }
+
+#winnerMessage {
+    text-align: center;
+    font-family: Crayon;
+    font-weight: normal;
+    font-size: 42px;
+    color: #ed6464;
+}
+
 
 #player1 {
     color: rgba(14, 85, 14, 0.897);
@@ -102,7 +110,7 @@ h3 {
 
 #fruitBtnDiv {
     text-align: left;
-    margin-left: 100px;
+    margin-left: 110px;
     padding-top: 20px;
 }
 
@@ -135,6 +143,11 @@ h3 {
 
 #fruitAttackBtn, #fruitDefendBtn {
     margin-right: 10px;
+}
+
+#winnerImgDiv {
+   
+    text-align: center;
 }
 
 /* h1:before {
