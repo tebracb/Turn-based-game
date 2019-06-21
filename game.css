@@ -125,8 +125,27 @@ h3 {
         color: transparent;
 }
 
+#veggieAttackBtn:hover, #fruitAttackBtn:hover {
+    background: url("img/scare_btn_hover.png") no-repeat;
+    background-size: 100px;
+    border: medium none !important;
+    width: 100px;
+    height: 40px;
+    color: transparent;
+}
+
 #veggieDefendBtn, #fruitDefendBtn {
     background: url('img/hide_btn.png') 0 0 transparent;
+    background-repeat: no-repeat;
+    background-size: 100px;
+    border: medium none !important;
+    width: 100px;
+    height: 40px;
+    color: transparent;
+}
+
+#veggieDefendBtn:hover, #fruitDefendBtn:hover {
+    background: url('img/hide_btn_hover.png') 0 0 transparent;
     background-repeat: no-repeat;
     background-size: 100px;
     border: medium none !important;
