@@ -104,14 +104,35 @@ h3 {
 
 #veggieBtnDiv {
     text-align: right;
-    margin-right: 80px;
-    padding-top: 20px;
+    margin-right: 30px;
+    padding-top: 30px;
 }
 
 #fruitBtnDiv {
     text-align: left;
-    margin-left: 110px;
-    padding-top: 20px;
+    margin-left: 60px;
+    padding-top: 30px;
+}
+
+
+#veggieAttackBtn, #fruitAttackBtn {
+        background: url('img/scare_btn.png') 0 0 transparent;
+        background-repeat: no-repeat;
+        background-size: 100px;
+        border: medium none !important;
+        width: 100px;
+        height: 40px;
+        color: transparent;
+}
+
+#veggieDefendBtn, #fruitDefendBtn {
+    background: url('img/hide_btn.png') 0 0 transparent;
+    background-repeat: no-repeat;
+    background-size: 100px;
+    border: medium none !important;
+    width: 100px;
+    height: 40px;
+    color: transparent;
 }
 
 /*
