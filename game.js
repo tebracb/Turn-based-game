@@ -441,6 +441,7 @@ function fight(player) {
         $(passivePlayer.bigImgID).addClass('shake');
 
         if (passivePlayer.cofidenceLevel <= 0) {
+            $(passivePlayer.attackButton).attr("disabled", true);
             $('#player1').fadeOut(1000);
             $('#player2').fadeOut(1000, function () {
                 $('#main').css('display', 'block');

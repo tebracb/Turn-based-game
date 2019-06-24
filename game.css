@@ -119,6 +119,7 @@ h3 {
     width: 100px;
     height: 40px;
     color: transparent;
+    cursor: pointer;
 }
 
 .btn:focus {
