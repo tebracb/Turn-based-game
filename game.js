@@ -354,7 +354,8 @@ function addClickHandlerToAvailableTiles(player) {
 
 
             if ((newPosition - passivePlayer.calculatePosition()) === 10 || (newPosition - passivePlayer.calculatePosition()) === -10 ||
-                (newPosition - passivePlayer.calculatePosition()) === 1 || (newPosition - passivePlayer.calculatePosition()) === -1) {
+                ((newPosition - passivePlayer.calculatePosition()) === 1 && (Math.floor(newPosition/COLUMNS) === Math.floor(passivePlayer.calculatePosition()/COLUMNS)))
+                || ((newPosition - passivePlayer.calculatePosition()) === -1 && (Math.floor(newPosition/COLUMNS) === Math.floor(passivePlayer.calculatePosition()/COLUMNS)))) {
                 changeUI();
                 return;
             }
@@ -384,12 +385,9 @@ function endPlayerTurn() {
 
 function changeUI() {
     $('#gameboard').fadeOut(1000);
-    $('#player1').append('<div id=veggieBtnDiv><button id=veggieAttackBtn>Scare</button><button id=veggieDefendBtn>Hide</button></div>');
-    $('#player2').append('<div id=fruitBtnDiv><button id=fruitAttackBtn>Scare</button><button id=fruitDefendBtn>Hide</button></div>');
-    // $("#fruitBtnDiv").css("text-align", "left");
-
-    // $('#player2').append('<button id=fruitAttackBtn>Scare</button>');
-    // $('#player2').append('<button id=fruitDefendBtn>Hide</button>');
+    $('#player1').append('<div id=veggieBtnDiv><button class = btn id=veggieAttackBtn></button><button class = btn id=veggieDefendBtn></button></div>');
+    $('#player2').append('<div id=fruitBtnDiv><button class = btn id=fruitAttackBtn></button><button class = btn id=fruitDefendBtn></button></div>');
+ 
 
     $(veggies.bigImgID).css('float', 'right');
     $(fruits.bigImgID).css('float', 'left');
@@ -445,6 +443,7 @@ function fight(player) {
                 $(player.cssClass).css('text-transform', 'capitalize');
                 $('<div id=winnerImgDiv><img src =' + player.winImgSrc + ' width=400px></div>').hide().appendTo('#main').fadeIn(1500);
                 $('#main').append('<h1 id=winnerMessage>Congratulations, the winner is Team ' + player.cssClass + '!</h1>');
+                $('#main').append('<div id =playAgainDiv><button class=btn id=playAgain></button></div>')
             });
 
         }

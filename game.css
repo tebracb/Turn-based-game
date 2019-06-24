@@ -114,44 +114,75 @@ h3 {
     padding-top: 30px;
 }
 
-
-#veggieAttackBtn, #fruitAttackBtn {
-        background: url('img/scare_btn.png') 0 0 transparent;
-        background-repeat: no-repeat;
-        background-size: 100px;
-        border: medium none !important;
-        width: 100px;
-        height: 40px;
-        color: transparent;
-}
-
-#veggieAttackBtn:hover, #fruitAttackBtn:hover {
-    background: url("img/scare_btn_hover.png") no-repeat;
-    background-size: 100px;
+.btn, .btn:hover  {
     border: medium none !important;
     width: 100px;
     height: 40px;
     color: transparent;
+}
+
+.btn:focus {
+    outline:0;
+}
+
+#veggieAttackBtn, #fruitAttackBtn {
+        background: url('img/scare_btn.png') 0 0 transparent;
+        background-size: 100px;
+        background-repeat: no-repeat;
+}
+
+#veggieAttackBtn:hover, #fruitAttackBtn:hover {
+    background: url("img/scare_btn_hover.png") 0 0 transparent;
+    background-size: 100px;
+    background-repeat: no-repeat;
+  
+}
+
+#veggieAttackBtn:focus, #fruitAttackBtn:focus {
+    background: url("img/scare_btn_pressed.png") 0 0 transparent;
+    background-size: 100px;
+    background-repeat: no-repeat;
+  
 }
 
 #veggieDefendBtn, #fruitDefendBtn {
     background: url('img/hide_btn.png') 0 0 transparent;
     background-repeat: no-repeat;
     background-size: 100px;
-    border: medium none !important;
-    width: 100px;
-    height: 40px;
-    color: transparent;
 }
 
 #veggieDefendBtn:hover, #fruitDefendBtn:hover {
     background: url('img/hide_btn_hover.png') 0 0 transparent;
     background-repeat: no-repeat;
     background-size: 100px;
-    border: medium none !important;
-    width: 100px;
-    height: 40px;
-    color: transparent;
+}
+
+#veggieDefendBtn:focus, #fruitDefendBtn:focus {
+    background: url('img/hide_btn_pressed.png') 0 0 transparent;
+    background-repeat: no-repeat;
+    background-size: 100px;
+}
+
+#playAgain {
+    background: url('img/play_again_btn.png') 0 0 transparent;
+    background-repeat: no-repeat;
+    background-size: 150px;
+    width: 150px;
+    height: 60px;
+   
+}
+
+#playAgain:hover {
+    background: url('img/play_again_btn_hover.png') 0 0 transparent;
+    background-repeat: no-repeat;
+    background-size: 150px;
+}
+
+#playAgain:focus {
+    background: url('img/play_again_btn_pressed.png') 0 0 transparent;
+      background-repeat: no-repeat;
+    background-size: 150px;
+
 }
 
 /*
@@ -186,6 +217,11 @@ h3 {
 }
 
 #winnerImgDiv {
+   
+    text-align: center;
+}
+
+#playAgainDiv {
    
     text-align: center;
 }
