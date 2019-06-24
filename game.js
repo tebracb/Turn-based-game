@@ -352,10 +352,11 @@ function addClickHandlerToAvailableTiles(player) {
             $(this).addClass("character occupiedTile");
             $(this).addClass(player.cssClass);
 
+            // start Battle Mode if the players get next to each other vertically or horizontally
 
             if ((newPosition - passivePlayer.calculatePosition()) === 10 || (newPosition - passivePlayer.calculatePosition()) === -10 ||
-                ((newPosition - passivePlayer.calculatePosition()) === 1 && (Math.floor(newPosition/COLUMNS) === Math.floor(passivePlayer.calculatePosition()/COLUMNS)))
-                || ((newPosition - passivePlayer.calculatePosition()) === -1 && (Math.floor(newPosition/COLUMNS) === Math.floor(passivePlayer.calculatePosition()/COLUMNS)))) {
+                ((newPosition - passivePlayer.calculatePosition()) === 1 && (Math.floor(newPosition / COLUMNS) === Math.floor(passivePlayer.calculatePosition() / COLUMNS))) ||
+                ((newPosition - passivePlayer.calculatePosition()) === -1 && (Math.floor(newPosition / COLUMNS) === Math.floor(passivePlayer.calculatePosition() / COLUMNS)))) {
                 changeUI();
                 return;
             }
@@ -383,11 +384,14 @@ function endPlayerTurn() {
     }
 }
 
+/*-------------------------------------------------------------------------------
+            BATTLE MODE
+---------------------------------------------------------------------------------*/
 function changeUI() {
     $('#gameboard').fadeOut(1000);
     $('#player1').append('<div id=veggieBtnDiv><button class = btn id=veggieAttackBtn></button><button class = btn id=veggieDefendBtn></button></div>');
     $('#player2').append('<div id=fruitBtnDiv><button class = btn id=fruitAttackBtn></button><button class = btn id=fruitDefendBtn></button></div>');
- 
+
 
     $(veggies.bigImgID).css('float', 'right');
     $(fruits.bigImgID).css('float', 'left');
@@ -442,8 +446,9 @@ function fight(player) {
                 $('#main').css('display', 'block');
                 $(player.cssClass).css('text-transform', 'capitalize');
                 $('<div id=winnerImgDiv><img src =' + player.winImgSrc + ' width=400px></div>').hide().appendTo('#main').fadeIn(1500);
+                // $('<div img src = img/fireworks.gif></div>').hide.appendTo('#winnerImgDiv').fadeIn(1500);
                 $('#main').append('<h1 id=winnerMessage>Congratulations, the winner is Team ' + player.cssClass + '!</h1>');
-                $('#main').append('<div id =playAgainDiv><button class=btn id=playAgain></button></div>')
+                $('#main').append('<div id =playAgainDiv><button class=btn id=playAgain></button></div>');
             });
 
         }

@@ -219,6 +219,10 @@ h3 {
 #winnerImgDiv {
    
     text-align: center;
+    background-image: url('img/fireworks.gif');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: 70% 20%;
 }
 
 #playAgainDiv {
