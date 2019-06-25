@@ -24,7 +24,20 @@ let weapons = [];
                 DOCUMENT READY - called when the document is loaded
 ---------------------------------------------------------------------------------*/
 
+function startGame() {
+  
+    changeTilesObstacles();
+    changeTilesWeapons();
+    addCharacters();
+    
+
+    prepareForTurn(veggies);
+    
+}
+
 $(document).ready(function () {
+    $(SQUARE).append(landTile);
+
     //add columns to the the temp row object
     for (var i = 0; i < COLUMNS; i++) {
         ROW.append(SQUARE.clone());
@@ -33,25 +46,28 @@ $(document).ready(function () {
     for (var i = 0; i < ROWS; i++) {
         $("#gameboard").append(ROW.clone());
     }
-    changeTilesObstacles();
-    changeTilesWeapons();
-    addCharacters();
-
-    prepareForTurn(veggies);
-
+    startGame();
 });
 
 /*-------------------------------------------------------------------------------
                 MAP POPULATED WITH RANDOMLY PLACED ELEMENTS
 ---------------------------------------------------------------------------------*/
-$(SQUARE).append(landTile);
+
 
 //selecting random tiles
 
 function createRandomNum() {
-
-    return Math.floor(Math.random() * $('.mainTile').length);
+    return Math.floor(Math.random() * $('.mainTile').length)
 };
+
+/* while (createRandomNum() <= 99 && createRandomNum() >= 0){
+        if (createRandomNum() < 0 || createRandomNum()>99) {
+        console.log(createRandomNum())
+}
+
+     createRandomNum()
+ } */
+
 
 function selectRandomTile() {
     return $('.mainTile:eq(' + createRandomNum() + ')');
@@ -68,14 +84,14 @@ function changeTilesObstacles() {
 };
 
 function changeTilesWeapons() {
-    for (i = 0; i < 1; i++) {
+    
 
         $(selectRandomTile()).attr('src', 'img/scarecrow.png').addClass("weapon scarecrow").removeClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/tractor.png').addClass("weapon tractor").removeClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/grasshopper.png').addClass("weapon grasshopper").removeClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/caterpillar.png').addClass("weapon caterpillar").removeClass("occupiedTile");
-    };
-
+    
+        $(selectRandomTile()).attr('src', 'img/black_hole.png').addClass("blackhole").removeClass("occupiedTile");
 };
 
 /*-------------------------------------------------------------------------------
@@ -115,9 +131,6 @@ let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "#fruitWeaponName
 let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "#veggieWeaponName", "#veggieWeaponPoint", "#veggieConfidenceLevel",
     "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png", "img/veggies_win.PNG", '#veggieAttackBtn', '#veggieDefendBtn', false);
 
-//???
-// $('#fruitsConfidenceLevel').text(" " +fruits.cofidenceLevel);
-
 
 let activePlayer = veggies;
 let passivePlayer = fruits;
@@ -144,6 +157,8 @@ let caterpillar = new Weapon("Caterpillar", "img/caterpillar.png", 25, "caterpil
 function addCharacters() {
     $(selectRandomTile()).attr('src', fruitSrc).addClass("occupiedTile character fruits");
     $(selectRandomTile()).attr('src', veggieSrc).addClass("occupiedTile character veggies");
+
+    // $('.mainTile:eq(' + 100 + ')').attr('src', fruitSrc).addClass("occupiedTile character fruits");
 
 };
 
@@ -208,7 +223,11 @@ function selectAvailableTiles(player) {
                     if (that.hasClass(w.cssClass)) {
                         that.attr("src", w.src)
                     };
-                })
+                });
+
+            } else if ($(this).hasClass("blackhole")) {
+                $(this).attr("src","img/black_hole.png");
+
             } else {
                 $(this).attr("src", 'img/dirtMainTile.png')
             }
@@ -282,9 +301,6 @@ function checkForWeapons(player, position, i) {
     });
 };
 
-// function changeWeaponOnTile() {
-
-// }
 /*-------------------------------------------------------------------------------
             MOVEMENT
 ---------------------------------------------------------------------------------*/
@@ -317,15 +333,15 @@ function addClickHandlerToAvailableTiles(player) {
                 $('.mainTile:eq(' + (oldPosition) + ')').attr("src", player.oldWeapon.src);
             } else {
 
-                $('.mainTile:eq(' + (oldPosition) + ')').attr("src", 'img/dirtMainTile.png'); // check if it's a weapon and set it to the weapon if it is
+                $('.mainTile:eq(' + (oldPosition) + ')').attr("src", 'img/dirtMainTile.png'); 
             }
 
-            //
+            
 
             //RIGHT
             if ((newPosition - oldPosition) < 4 && (newPosition - oldPosition) > 0) {
                 for (i = 1; i <= (newPosition - oldPosition); i++) {
-                    checkForWeapons(player, oldPosition, i); //pass in oldPosition + i to the function
+                    checkForWeapons(player, oldPosition, i); //TODO - pass in oldPosition + i to the function
                 }
 
                 //LEFT
@@ -347,10 +363,18 @@ function addClickHandlerToAvailableTiles(player) {
                 }
             }
 
-
             $(this).attr('src', player.src);
             $(this).addClass("character occupiedTile");
             $(this).addClass(player.cssClass);
+
+
+            if ($('.mainTile:eq(' + (newPosition) + ')').hasClass('blackhole')) {
+                
+                ($('.mainTile:eq(' + (newPosition) + ')').removeClass('character fruits veggies occupiedTile'));
+                ($('.mainTile:eq(' + (newPosition) + ')').attr('src','img/black_hole.png'));
+                $(selectRandomTile()).attr('src', player.src).addClass("occupiedTile character").addClass(player.cssClass);
+            }
+
 
             // start Battle Mode if the players get next to each other vertically or horizontally
 
@@ -400,18 +424,12 @@ function changeUI() {
     fight(activePlayer);
 
 };
-
+/*The player can choose to attack or defend against the next shot
+If the player chooses to defend themselves, they sustain 50% less damage than normal */
 
 function fight(player) {
 
-    $(player.bigImgID).addClass('grow');
-    $(passivePlayer.bigImgID).removeClass('grow');
-
-    $(passivePlayer.attackButton).hide();
-    $(passivePlayer.defendButton).hide();
-
-    $(player.attackButton).show();
-    $(player.defendButton).show();
+   showActivePlayer(player);
 
 
     $(player.attackButton).on('click', function () {
@@ -449,7 +467,8 @@ function fight(player) {
                 $('<div id=winnerImgDiv><img src =' + player.winImgSrc + ' width=400px></div>').hide().appendTo('#main').fadeIn(1500);
                 // $('<div img src = img/fireworks.gif></div>').hide.appendTo('#winnerImgDiv').fadeIn(1500);
                 $('#main').append('<h1 id=winnerMessage>Congratulations, the winner is Team ' + player.cssClass + '!</h1>');
-                $('#main').append('<div id =playAgainDiv><button class=btn id=playAgain></button></div>');
+                $('#main').append('<div id =playAgainDiv><button class=btn id=playAgainBtn></button></div>');
+                addEventListenerToPlayAgain();
             });
 
         }
@@ -472,5 +491,23 @@ function fight(player) {
 
 };
 
-/*The player can choose to attack or defend against the next shot
-If the player chooses to defend themselves, they sustain 50% less damage than normal */
+function showActivePlayer(player) {
+ $(player.bigImgID).addClass('grow');
+    $(passivePlayer.bigImgID).removeClass('grow');
+
+    $(passivePlayer.attackButton).hide();
+    $(passivePlayer.defendButton).hide();
+
+    $(player.attackButton).show();
+    $(player.defendButton).show();
+};
+
+function addEventListenerToPlayAgain (){
+$('#playAgainBtn').on('click', function() {
+    $('#winnerImgDiv').css('display', 'none');
+    $('#winnerMessage').css('display', 'none');
+    $('#gameboard').css('display', 'block');
+    startGame();
+    console.log('button works')
+})
+}
