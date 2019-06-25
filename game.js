@@ -86,10 +86,10 @@ function changeTilesObstacles() {
 function changeTilesWeapons() {
     
 
-        $(selectRandomTile()).attr('src', 'img/scarecrow.png').addClass("weapon scarecrow").removeClass("occupiedTile");
-        $(selectRandomTile()).attr('src', 'img/tractor.png').addClass("weapon tractor").removeClass("occupiedTile");
-        $(selectRandomTile()).attr('src', 'img/grasshopper.png').addClass("weapon grasshopper").removeClass("occupiedTile");
-        $(selectRandomTile()).attr('src', 'img/caterpillar.png').addClass("weapon caterpillar").removeClass("occupiedTile");
+        $(selectRandomTile()).attr('src', scarecrow.src).addClass("weapon").addClass(scarecrow.cssClass).removeClass("occupiedTile");
+        $(selectRandomTile()).attr('src', tractor.src).addClass("weapon").addClass(tractor.cssClass).removeClass("occupiedTile");
+        $(selectRandomTile()).attr('src', grasshopper.src).addClass("weapon").addClass(grasshopper.cssClass).removeClass("occupiedTile");
+        $(selectRandomTile()).attr('src', caterpillar.src).addClass("weapon").addClass(caterpillar.cssClass).removeClass("occupiedTile");
     
         $(selectRandomTile()).attr('src', 'img/black_hole.png').addClass("blackhole").removeClass("occupiedTile");
 };
@@ -510,4 +510,21 @@ $('#playAgainBtn').on('click', function() {
     startGame();
     console.log('button works')
 })
+};
+
+$('#modalOpenBtn').on('click', function(){
+    $('.modalDiv').css('display', 'block');
+    closeModalOnOutsideClick();
+});
+
+$('#modalCloseBtn').on('click', function(){
+    $('.modalDiv').css('display', 'none');
+});
+
+function closeModalOnOutsideClick(){
+$(window).on('click', function(e){
+    if(e.target == $('.modalDiv')){
+    $('.modalDiv').css('display', 'none');
+    }
+});
 }

@@ -6,8 +6,8 @@
 
 #main {
     display: flex;
+   
 }
-
 
 
 #gameboard {
@@ -64,8 +64,10 @@ font-family: Crayon;
 
 font-weight: normal;
 font-size: 1.15em;
-margin: 15px;
+margin: 5px 15px;
 }
+
+
 
 #winnerMessage {
     text-align: center;
@@ -102,6 +104,66 @@ h3 {
     font-size: 1.3em;
 }
 
+#modalOpenBtn {
+    float: right;
+    background: url('img/modal_img.png');
+    background-size: 80px;
+    background-repeat: no-repeat;
+    height: 80px;
+    width: 80px;
+    text-decoration: none;
+    border: none;
+    transition: all .2s ease-in-out; 
+
+}
+
+#modalOpenBtn:hover { 
+    transform: scale(1.2); 
+    cursor: pointer;
+}
+
+#modalOpenBtn:focus {
+    outline: 0;
+}
+/* MODAL STYLING */
+
+.modalDiv {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+   
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalContent {
+    background-color: antiquewhite;
+    margin: 10% auto;
+    padding: 20px;
+    width: 60%;
+    box-shadow: 0 5px 8px 0 rgba(0,0,0,0.2), 
+    0 7px 20px 0 rgba(0,0,0,0.17);
+    border-radius: 3px;
+    font-family: Crayon;
+    /* text-transform: uppercase; */
+    font-size: 1.2em;
+}
+
+#modalCloseBtn {
+    color: #ccc;
+    float: right;
+    font-size: 26px;
+}
+
+#modalCloseBtn:hover, #modalCloseBtn:focus {
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
+
 #veggieBtnDiv {
     text-align: right;
     margin-right: 30px;
@@ -113,6 +175,7 @@ h3 {
     margin-left: 60px;
     padding-top: 30px;
 }
+
 
 .btn, .btn:hover  {
     border: medium none !important;
@@ -230,24 +293,3 @@ h3 {
    
     text-align: center;
 }
-
-/* h1:before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    background-color: #000;
-    visibility: hidden;
-    -webkit-transform: scaleX(0);
-    transform: scaleX(0);
-    -webkit-transition: all 0.3s ease-in-out 0s;
-    transition: all 0.3s ease-in-out 0s;
-  }
-
-  h1:hover:before {
-    visibility: visible;
-    -webkit-transform: scaleX(1);
-    transform: scaleX(1);
-  } */
