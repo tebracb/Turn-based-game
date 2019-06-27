@@ -25,17 +25,17 @@ let weapons = [];
 ---------------------------------------------------------------------------------*/
 
 function startGame() {
-  
+
     changeTilesObstacles();
     changeTilesWeapons();
     addCharacters();
-    
+
 
     prepareForTurn(veggies);
-    
+
 }
 
-$(document).ready(function () {
+$().ready(function () {
     $(SQUARE).append(landTile);
 
     //add columns to the the temp row object
@@ -47,6 +47,13 @@ $(document).ready(function () {
         $("#gameboard").append(ROW.clone());
     }
     startGame();
+
+    // if ($(".fruits").length) {
+    //     // reload if fruit exists.
+    //     document.location.reload(true);
+    //     } else {
+    //     console.log("ERROR = Fruit class not found by jquery selector");
+    //     }
 });
 
 /*-------------------------------------------------------------------------------
@@ -70,7 +77,7 @@ function createRandomNum() {
 
 
 function selectRandomTile() {
-    return $('.mainTile:eq(' + createRandomNum() + ')');
+    return $('.mainTile:eq(' + createRandomNum() + ')'); //check if it exists, .length
 }
 
 function changeTilesObstacles() {
@@ -84,14 +91,14 @@ function changeTilesObstacles() {
 };
 
 function changeTilesWeapons() {
-    
 
-        $(selectRandomTile()).attr('src', scarecrow.src).addClass("weapon").addClass(scarecrow.cssClass).removeClass("occupiedTile");
-        $(selectRandomTile()).attr('src', tractor.src).addClass("weapon").addClass(tractor.cssClass).removeClass("occupiedTile");
-        $(selectRandomTile()).attr('src', grasshopper.src).addClass("weapon").addClass(grasshopper.cssClass).removeClass("occupiedTile");
-        $(selectRandomTile()).attr('src', caterpillar.src).addClass("weapon").addClass(caterpillar.cssClass).removeClass("occupiedTile");
-    
-        $(selectRandomTile()).attr('src', 'img/black_hole.png').addClass("blackhole").removeClass("occupiedTile");
+
+    $(selectRandomTile()).attr('src', scarecrow.src).addClass("weapon").addClass(scarecrow.cssClass).removeClass("occupiedTile");
+    $(selectRandomTile()).attr('src', tractor.src).addClass("weapon").addClass(tractor.cssClass).removeClass("occupiedTile");
+    $(selectRandomTile()).attr('src', grasshopper.src).addClass("weapon").addClass(grasshopper.cssClass).removeClass("occupiedTile");
+    $(selectRandomTile()).attr('src', caterpillar.src).addClass("weapon").addClass(caterpillar.cssClass).removeClass("occupiedTile");
+
+    $(selectRandomTile()).attr('src', 'img/black_hole.png').addClass("blackhole").removeClass("occupiedTile");
 };
 
 /*-------------------------------------------------------------------------------
@@ -226,7 +233,7 @@ function selectAvailableTiles(player) {
                 });
 
             } else if ($(this).hasClass("blackhole")) {
-                $(this).attr("src","img/black_hole.png");
+                $(this).attr("src", "img/black_hole.png");
 
             } else {
                 $(this).attr("src", 'img/dirtMainTile.png')
@@ -333,10 +340,10 @@ function addClickHandlerToAvailableTiles(player) {
                 $('.mainTile:eq(' + (oldPosition) + ')').attr("src", player.oldWeapon.src);
             } else {
 
-                $('.mainTile:eq(' + (oldPosition) + ')').attr("src", 'img/dirtMainTile.png'); 
+                $('.mainTile:eq(' + (oldPosition) + ')').attr("src", 'img/dirtMainTile.png');
             }
 
-            
+
 
             //RIGHT
             if ((newPosition - oldPosition) < 4 && (newPosition - oldPosition) > 0) {
@@ -369,9 +376,9 @@ function addClickHandlerToAvailableTiles(player) {
 
 
             if ($('.mainTile:eq(' + (newPosition) + ')').hasClass('blackhole')) {
-                
+
                 ($('.mainTile:eq(' + (newPosition) + ')').removeClass('character fruits veggies occupiedTile'));
-                ($('.mainTile:eq(' + (newPosition) + ')').attr('src','img/black_hole.png'));
+                ($('.mainTile:eq(' + (newPosition) + ')').attr('src', 'img/black_hole.png'));
                 $(selectRandomTile()).attr('src', player.src).addClass("occupiedTile character").addClass(player.cssClass);
             }
 
@@ -429,7 +436,7 @@ If the player chooses to defend themselves, they sustain 50% less damage than no
 
 function fight(player) {
 
-   showActivePlayer(player);
+    showActivePlayer(player);
 
 
     $(player.attackButton).on('click', function () {
@@ -492,7 +499,7 @@ function fight(player) {
 };
 
 function showActivePlayer(player) {
- $(player.bigImgID).addClass('grow');
+    $(player.bigImgID).addClass('grow');
     $(passivePlayer.bigImgID).removeClass('grow');
 
     $(passivePlayer.attackButton).hide();
@@ -502,29 +509,33 @@ function showActivePlayer(player) {
     $(player.defendButton).show();
 };
 
-function addEventListenerToPlayAgain (){
-$('#playAgainBtn').on('click', function() {
-    $('#winnerImgDiv').css('display', 'none');
-    $('#winnerMessage').css('display', 'none');
-    $('#gameboard').css('display', 'block');
-    startGame();
-    console.log('button works')
-})
+function addEventListenerToPlayAgain() {
+    $('#playAgainBtn').on('click', function () {
+        $('#winnerImgDiv').css('display', 'none');
+        $('#winnerMessage').css('display', 'none');
+        $('#gameboard').css('display', 'block');
+        startGame();
+        console.log('button works')
+    })
 };
 
-$('#modalOpenBtn').on('click', function(){
+$('#modalOpenBtn').on('click', function () {
     $('.modalDiv').css('display', 'block');
     closeModalOnOutsideClick();
+
 });
 
-$('#modalCloseBtn').on('click', function(){
+$('#modalCloseBtn').on('click', function () {
     $('.modalDiv').css('display', 'none');
 });
 
-function closeModalOnOutsideClick(){
-$(window).on('click', function(e){
-    if(e.target == $('.modalDiv')){
-    $('.modalDiv').css('display', 'none');
-    }
+function closeModalOnOutsideClick() {
+
+    $('.modalDiv').on('click', function () {
+        $('.modalDiv').css('display', 'none');
+    });
+};
+
+$(".modalContent").click(function (e) {
+    e.stopPropagation();
 });
-}

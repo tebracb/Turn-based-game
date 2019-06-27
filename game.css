@@ -118,8 +118,9 @@ h3 {
 }
 
 #modalOpenBtn:hover { 
-    transform: scale(1.2); 
     cursor: pointer;
+    transform: scale(1.2); 
+    
 }
 
 #modalOpenBtn:focus {
@@ -155,7 +156,7 @@ h3 {
 #modalCloseBtn {
     color: #ccc;
     float: right;
-    font-size: 26px;
+    font-size: 36px;
 }
 
 #modalCloseBtn:hover, #modalCloseBtn:focus {
@@ -189,10 +190,16 @@ h3 {
     outline:0;
 }
 
-#veggieAttackBtn, #fruitAttackBtn {
-        background: url('img/scare_btn.png') 0 0 transparent;
+/* #veggieAttackBtn, #fruitAttackBtn, #veggieAttackBtn:hover, #fruitAttackBtn:hover, #veggieAttackBtn:focus, #fruitAttackBtn:focus
+#veggieDefendBtn, #fruitDefendBtn, #veggieDefendBtn:hover, #fruitDefendBtn:hover, #veggieDefendBtn:focus, #fruitDefendBtn:focus{
         background-size: 100px;
         background-repeat: no-repeat;
+} */
+
+#veggieAttackBtn, #fruitAttackBtn {
+    background: url('img/scare_btn.png') 0 0 transparent;
+    background-size: 100px;
+    background-repeat: no-repeat;
 }
 
 #veggieAttackBtn:hover, #fruitAttackBtn:hover {
@@ -211,20 +218,20 @@ h3 {
 
 #veggieDefendBtn, #fruitDefendBtn {
     background: url('img/hide_btn.png') 0 0 transparent;
-    background-repeat: no-repeat;
     background-size: 100px;
+    background-repeat: no-repeat;
 }
 
 #veggieDefendBtn:hover, #fruitDefendBtn:hover {
     background: url('img/hide_btn_hover.png') 0 0 transparent;
-    background-repeat: no-repeat;
     background-size: 100px;
+    background-repeat: no-repeat;
 }
 
 #veggieDefendBtn:focus, #fruitDefendBtn:focus {
     background: url('img/hide_btn_pressed.png') 0 0 transparent;
-    background-repeat: no-repeat;
     background-size: 100px;
+    background-repeat: no-repeat;
 }
 
 #playAgainBtn {
