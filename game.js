@@ -216,14 +216,31 @@ function selectAvailableTiles(player) {
 
     $.each((getAvailableTiles(player.calculatePosition())), function () {
 
-        $(this).css("box-sizing", "border-box");
-        $(this).css("border", player.borderStyle);
+            $(this).css("box-sizing", "border-box");
+            $(this).css("border", player.borderStyle);
 
-        $(this).mouseenter(function () {
-            $(this).attr("src", player.moveImgSrc);
-        });
+            $(this).mouseenter(function () {
+                    if (player === fruits) {
+
+                        if (($(this).index('.mainTile') - player.calculatePosition() < 4) && ($(this).index('.mainTile') - player.calculatePosition() > 0)) {
+                            $(this).attr("src", player.moveImgSrc).css('transform', 'scaleX(-1)');
+                        } else {
+                            $(this).attr("src", player.moveImgSrc).css('transform', 'none');
+                        }
+                    } else {
+                        if ((player.calculatePosition() - $(this).index('.mainTile') < 4) && (player.calculatePosition() - $(this).index('.mainTile') > 0)) {
+                            $(this).attr("src", player.moveImgSrc).css('transform', 'scaleX(-1)');
+                        }else {
+                            $(this).attr("src", player.moveImgSrc).css('transform', 'none');
+                        }
+                    }
+            });
+
+
+
 
         $(this).mouseleave(function () {
+            $(this).css('transform', 'none');
             if ($(this).hasClass("weapon")) {
                 that = $(this);
                 $.each(weapons, function (index, w) {
@@ -241,7 +258,7 @@ function selectAvailableTiles(player) {
         });
 
         $(this).on('click', function () {
-            $(this).attr("src", player.src);
+            $(this).attr("src", player.src).css('transform', 'none');
 
             // $(this).fadeIn(5000);
         });
