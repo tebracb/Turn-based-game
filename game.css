@@ -190,8 +190,21 @@ h3 {
     outline:0;
 }
 
-/* #veggieAttackBtn, #fruitAttackBtn, #veggieAttackBtn:hover, #fruitAttackBtn:hover, #veggieAttackBtn:focus, #fruitAttackBtn:focus
-#veggieDefendBtn, #fruitDefendBtn, #veggieDefendBtn:hover, #fruitDefendBtn:hover, #veggieDefendBtn:focus, #fruitDefendBtn:focus{
+/* #veggieAttackBtn,
+#fruitAttackBtn,
+#veggieAttackBtn:hover,
+#fruitAttackBtn:hover,
+#veggieAttackBtn:focus,
+#fruitAttackBtn:focus,
+#veggieDefendBtn,
+#fruitDefendBtn,
+#veggieDefendBtn:hover,
+#fruitDefendBtn:hover,
+#veggieDefendBtn:focus,
+#fruitDefendBtn:focus,
+#playAgainBtn,
+#playAgainBtn:hover,
+#playAgainBtn:focus {
         background-size: 100px;
         background-repeat: no-repeat;
 } */
@@ -205,7 +218,7 @@ h3 {
 #veggieAttackBtn:hover, #fruitAttackBtn:hover {
     background: url("img/scare_btn_hover.png") 0 0 transparent;
     background-size: 100px;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; 
   
 }
 

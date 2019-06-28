@@ -25,13 +25,27 @@ let weapons = [];
 ---------------------------------------------------------------------------------*/
 
 function startGame() {
+    veggies.currentWeapon = "";
+    veggies.cofidenceLevel = 100;
+    $(veggies.confidenceLevelDisplay).text(" " + veggies.cofidenceLevel);
+    $(veggies.weaponName).text("Bare Hands");
+    $(veggies.weaponPoint).text(10);
 
+    fruits.currentWeapon = "";
+    fruits.cofidenceLevel = 100;
+    $(fruits.confidenceLevelDisplay).text(" " + fruits.cofidenceLevel);
+    $(fruits.weaponName).text("Bare Hands");
+    $(fruits.weaponPoint).text(10);
+
+    // (re)draw the map
+
+    $(".mainTile").attr("class", "mainTile").attr("src", 'img/dirtMainTile.png');
     changeTilesObstacles();
     changeTilesWeapons();
     addCharacters();
 
-
-    prepareForTurn(veggies);
+    activePlayer = veggies;
+    prepareForTurn(activePlayer);
 
 }
 
@@ -64,7 +78,8 @@ $().ready(function () {
 //selecting random tiles
 
 function createRandomNum() {
-    return Math.floor(Math.random() * $('.mainTile').length)
+    let randomNum = Math.floor(Math.random() * $('.mainTile').length);
+    return randomNum;
 };
 
 /* while (createRandomNum() <= 99 && createRandomNum() >= 0){
@@ -77,7 +92,15 @@ function createRandomNum() {
 
 
 function selectRandomTile() {
-    return $('.mainTile:eq(' + createRandomNum() + ')'); //check if it exists, .length
+
+    let randomTile = $('.mainTile:eq(' + createRandomNum() + ')');
+    if ($(randomTile).hasClass("occupiedTile") || $(randomTile).hasClass("weapon") || $(randomTile).hasClass("blackhole") || randomTile === -1) {
+        // selectRandomTile();
+        randomTile = $('.mainTile:eq(' + createRandomNum() + ')');
+        return randomTile;
+    } else {
+        return randomTile; //check if it exists, .length
+    }
 }
 
 function changeTilesObstacles() {
@@ -86,7 +109,7 @@ function changeTilesObstacles() {
         $(selectRandomTile()).attr('src', 'img/mole.png').addClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/grass.png').addClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/pole.png').addClass("occupiedTile");
-        $(selectRandomTile()).attr('src', 'img/hay.png').addClass("occupiedTile");
+        $(selectRandomTile()).attr('src', 'img/hay.png').addClass("occupiedTile hay");
     }
 };
 
@@ -162,9 +185,11 @@ let caterpillar = new Weapon("Caterpillar", "img/caterpillar.png", 25, "caterpil
 
 
 function addCharacters() {
-    $(selectRandomTile()).attr('src', fruitSrc).addClass("occupiedTile character fruits");
-    $(selectRandomTile()).attr('src', veggieSrc).addClass("occupiedTile character veggies");
 
+
+    $(selectRandomTile()).attr('src', fruitSrc).addClass("occupiedTile character fruits");
+
+    $(selectRandomTile()).attr('src', veggieSrc).addClass("occupiedTile character veggies");
     // $('.mainTile:eq(' + 100 + ')').attr('src', fruitSrc).addClass("occupiedTile character fruits");
 
 };
@@ -216,25 +241,25 @@ function selectAvailableTiles(player) {
 
     $.each((getAvailableTiles(player.calculatePosition())), function () {
 
-            $(this).css("box-sizing", "border-box");
-            $(this).css("border", player.borderStyle);
+        $(this).css("box-sizing", "border-box");
+        $(this).css("border", player.borderStyle);
 
-            $(this).mouseenter(function () {
-                    if (player === fruits) {
+        $(this).mouseenter(function () {
+            if (player === fruits) {
 
-                        if (($(this).index('.mainTile') - player.calculatePosition() < 4) && ($(this).index('.mainTile') - player.calculatePosition() > 0)) {
-                            $(this).attr("src", player.moveImgSrc).css('transform', 'scaleX(-1)');
-                        } else {
-                            $(this).attr("src", player.moveImgSrc).css('transform', 'none');
-                        }
-                    } else {
-                        if ((player.calculatePosition() - $(this).index('.mainTile') < 4) && (player.calculatePosition() - $(this).index('.mainTile') > 0)) {
-                            $(this).attr("src", player.moveImgSrc).css('transform', 'scaleX(-1)');
-                        }else {
-                            $(this).attr("src", player.moveImgSrc).css('transform', 'none');
-                        }
-                    }
-            });
+                if (($(this).index('.mainTile') - player.calculatePosition() < 4) && ($(this).index('.mainTile') - player.calculatePosition() > 0)) {
+                    $(this).attr("src", player.moveImgSrc).css('transform', 'scaleX(-1)');
+                } else {
+                    $(this).attr("src", player.moveImgSrc).css('transform', 'none');
+                }
+            } else {
+                if ((player.calculatePosition() - $(this).index('.mainTile') < 4) && (player.calculatePosition() - $(this).index('.mainTile') > 0)) {
+                    $(this).attr("src", player.moveImgSrc).css('transform', 'scaleX(-1)');
+                } else {
+                    $(this).attr("src", player.moveImgSrc).css('transform', 'none');
+                }
+            }
+        });
 
 
 
@@ -526,13 +551,34 @@ function showActivePlayer(player) {
     $(player.defendButton).show();
 };
 
+
+
 function addEventListenerToPlayAgain() {
     $('#playAgainBtn').on('click', function () {
-        $('#winnerImgDiv').css('display', 'none');
-        $('#winnerMessage').css('display', 'none');
+
+        // delete button divs and winner illustrations from UI, set back interface to map mode
+
+        $('#playAgainDiv').remove();
+        $('#veggieBtnDiv').remove();
+        $('#fruitBtnDiv').remove();
+        $('#winnerImgDiv').remove();
+        $('#winnerMessage').remove();
         $('#gameboard').css('display', 'block');
+
+        $('#main').css('display', 'flex');
+
+        // change back images and img classes to default
+
+        $(fruits.bigImgID).attr('src', "img/fruit_big.PNG");
+        $(veggies.bigImgID).attr('src', "img/veggie_big.PNG");
+        $('#player1').fadeIn(1000);
+        $('#player2').fadeIn(1000);
+        $(fruits.bigImgID).css('float', 'none').removeClass('shake grow');
+        $(veggies.bigImgID).css('float', 'none').removeClass('shake grow');
+
+
         startGame();
-        console.log('button works')
+
     })
 };
 
