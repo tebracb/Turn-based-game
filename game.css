@@ -64,7 +64,7 @@ font-family: Crayon;
 
 font-weight: normal;
 font-size: 1.15em;
-margin: 5px 15px;
+margin: 0px 15px;
 }
 
 
@@ -143,7 +143,7 @@ h3 {
 .modalContent {
     background-color: antiquewhite;
     margin: 10% auto;
-    padding: 20px;
+    padding: 10px 30px;
     width: 60%;
     box-shadow: 0 5px 8px 0 rgba(0,0,0,0.2), 
     0 7px 20px 0 rgba(0,0,0,0.17);
@@ -151,6 +151,7 @@ h3 {
     font-family: Crayon;
     /* text-transform: uppercase; */
     font-size: 1.2em;
+    color: #652913;
 }
 
 #modalCloseBtn {
@@ -163,6 +164,29 @@ h3 {
     cursor: pointer;
     text-decoration: none;
     color: black;
+}
+
+#modalSpan {
+    font-family: 'Coiny', cursive;
+    color: rgb(83, 52, 14)
+}
+
+figure {
+    display: inline-block;
+    text-align: center;
+    width: 160px;
+    vertical-align: top;
+}
+
+figure img {
+    border: 2px solid #F6CD8B;
+    width: 50px;
+    
+}
+
+figure figcaption {
+    text-align: center;
+
 }
 
 #veggieBtnDiv {

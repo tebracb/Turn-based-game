@@ -255,6 +255,7 @@ function selectAvailableTiles(player) {
             } else {
                 if ((player.calculatePosition() - $(this).index('.mainTile') < 4) && (player.calculatePosition() - $(this).index('.mainTile') > 0)) {
                     $(this).attr("src", player.moveImgSrc).css('transform', 'scaleX(-1)');
+                     
                 } else {
                     $(this).attr("src", player.moveImgSrc).css('transform', 'none');
                 }
@@ -466,8 +467,8 @@ function changeUI() {
     $('#player2').append('<div id=fruitBtnDiv><button class = btn id=fruitAttackBtn></button><button class = btn id=fruitDefendBtn></button></div>');
 
 
-    $(veggies.bigImgID).css('float', 'right');
-    $(fruits.bigImgID).css('float', 'left');
+    $(veggies.bigImgID).css('float', 'right').css('margin-top', '15px');
+    $(fruits.bigImgID).css('float', 'left').css('margin-top', '15px');
 
     endPlayerTurn();
     fight(activePlayer);
@@ -514,7 +515,7 @@ function fight(player) {
                 $('#main').css('display', 'block');
                 $(player.cssClass).css('text-transform', 'capitalize');
                 $('<div id=winnerImgDiv><img src =' + player.winImgSrc + ' width=400px></div>').hide().appendTo('#main').fadeIn(1500);
-                // $('<div img src = img/fireworks.gif></div>').hide.appendTo('#winnerImgDiv').fadeIn(1500);
+               
                 $('#main').append('<h1 id=winnerMessage>Congratulations, the winner is Team ' + player.cssClass + '!</h1>');
                 $('#main').append('<div id =playAgainDiv><button class=btn id=playAgainBtn></button></div>');
                 addEventListenerToPlayAgain();
@@ -573,8 +574,8 @@ function addEventListenerToPlayAgain() {
         $(veggies.bigImgID).attr('src', "img/veggie_big.PNG");
         $('#player1').fadeIn(1000);
         $('#player2').fadeIn(1000);
-        $(fruits.bigImgID).css('float', 'none').removeClass('shake grow');
-        $(veggies.bigImgID).css('float', 'none').removeClass('shake grow');
+        $(fruits.bigImgID).css('float', 'none').css('margin-top', '0px').removeClass('shake grow');
+        $(veggies.bigImgID).css('float', 'none').css('margin-top', '0px').removeClass('shake grow');
 
 
         startGame();
