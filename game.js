@@ -189,17 +189,30 @@ function addCharacters() {
 
     $(selectRandomTile()).attr('src', fruitSrc).addClass("occupiedTile character fruits");
 
-    $(selectRandomTile()).attr('src', veggieSrc).addClass("occupiedTile character veggies");
-    // $('.mainTile:eq(' + 100 + ')').attr('src', fruitSrc).addClass("occupiedTile character fruits");
 
-};
+    veggieStartPosition = selectRandomTile();
+    $.each((getAvailableTiles(fruits.calculatePosition())), function () {
+        if ($(this) === veggieStartPosition) {
+            console.log('upsie');
+            return false;
+
+        } else {
+            $(veggieStartPosition).attr('src', veggieSrc).addClass("occupiedTile character veggies");
+            return false;
+        }
+        // $('.mainTile:eq(' + 100 + ')').attr('src', fruitSrc).addClass("occupiedTile character fruits");
+
+
+    });
+}
+// );
 
 
 /*-------------------------------------------------------------------------------
             SELECTED TILES
 ---------------------------------------------------------------------------------*/
 
-/*function taking calculatePosition() (character's index position) as argument, 
+/*function taking character's index position as argument, 
 loops through 3 tiles in all 4 directions,
 pushes the tiles which are not occupied or not after the edge of the map to availableTiles array*/
 
@@ -236,6 +249,7 @@ function getAvailableTiles(characterPosition) {
     return availableTiles;
 };
 
+// ADDING HOVER (MOUSEENTER, MOUSELEAVE) FUNCTIONALITY TO AVAILABLE TILES 
 
 function selectAvailableTiles(player) {
 
@@ -243,6 +257,8 @@ function selectAvailableTiles(player) {
 
         $(this).css("box-sizing", "border-box");
         $(this).css("border", player.borderStyle);
+
+        //adding hover effect (running character img); mirroring img if hover is in the other direction than where the character is facing
 
         $(this).mouseenter(function () {
             if (player === fruits) {
@@ -255,15 +271,14 @@ function selectAvailableTiles(player) {
             } else {
                 if ((player.calculatePosition() - $(this).index('.mainTile') < 4) && (player.calculatePosition() - $(this).index('.mainTile') > 0)) {
                     $(this).attr("src", player.moveImgSrc).css('transform', 'scaleX(-1)');
-                     
+
                 } else {
                     $(this).attr("src", player.moveImgSrc).css('transform', 'none');
                 }
             }
         });
 
-
-
+        //on mouseleave set back tile's img src to weapon (if there's weapon on the tile), black hole, or empty tile
 
         $(this).mouseleave(function () {
             $(this).css('transform', 'none');
@@ -283,11 +298,6 @@ function selectAvailableTiles(player) {
             }
         });
 
-        $(this).on('click', function () {
-            $(this).attr("src", player.src).css('transform', 'none');
-
-            // $(this).fadeIn(5000);
-        });
     });
 }
 
@@ -364,11 +374,7 @@ function addClickHandlerToAvailableTiles(player) {
 
     $.each(getAvailableTiles(player.calculatePosition()), function () {
 
-
-
         $(this).on('click', function () {
-
-
             oldPosition = player.calculatePosition();
             newPosition = ($(this).index('.mainTile'));
 
@@ -413,9 +419,10 @@ function addClickHandlerToAvailableTiles(player) {
                 }
             }
 
-            $(this).attr('src', player.src);
-            $(this).addClass("character occupiedTile");
-            $(this).addClass(player.cssClass);
+            // 'move character' to new tile by changing the tile's img src to the player's img, removing mirror
+
+            $(this).attr('src', player.src).css('transform', 'none');
+            $(this).addClass("character occupiedTile").addClass(player.cssClass);
 
 
             if ($('.mainTile:eq(' + (newPosition) + ')').hasClass('blackhole')) {
@@ -515,7 +522,7 @@ function fight(player) {
                 $('#main').css('display', 'block');
                 $(player.cssClass).css('text-transform', 'capitalize');
                 $('<div id=winnerImgDiv><img src =' + player.winImgSrc + ' width=400px></div>').hide().appendTo('#main').fadeIn(1500);
-               
+
                 $('#main').append('<h1 id=winnerMessage>Congratulations, the winner is Team ' + player.cssClass + '!</h1>');
                 $('#main').append('<div id =playAgainDiv><button class=btn id=playAgainBtn></button></div>');
                 addEventListenerToPlayAgain();
@@ -599,6 +606,8 @@ function closeModalOnOutsideClick() {
         $('.modalDiv').css('display', 'none');
     });
 };
+
+// block closeModalOnOutsideClick() when the click is inside the modalContent div
 
 $(".modalContent").click(function (e) {
     e.stopPropagation();

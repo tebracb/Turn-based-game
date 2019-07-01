@@ -142,7 +142,7 @@ h3 {
 
 .modalContent {
     background-color: antiquewhite;
-    margin: 10% auto;
+    margin: 5% auto;
     padding: 10px 30px;
     width: 60%;
     box-shadow: 0 5px 8px 0 rgba(0,0,0,0.2), 
@@ -168,7 +168,7 @@ h3 {
 
 #modalSpan {
     font-family: 'Coiny', cursive;
-    color: rgb(83, 52, 14)
+    color: #965c15;
 }
 
 figure {
@@ -192,6 +192,7 @@ figure figcaption {
 #copyright {
     text-align: right;
     font-size: 0.8em;
+    margin: 0;
 }
 
 #cCopyright {
