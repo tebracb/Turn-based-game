@@ -189,6 +189,15 @@ figure figcaption {
 
 }
 
+#copyright {
+    text-align: right;
+    font-size: 0.8em;
+}
+
+#cCopyright {
+    font-family: 'Coiny', cursive;
+}
+
 #veggieBtnDiv {
     text-align: right;
     margin-right: 30px;
