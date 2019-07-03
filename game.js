@@ -42,11 +42,12 @@ function startGame() {
     $(".mainTile").attr("class", "mainTile").attr("src", 'img/dirtMainTile.png');
     changeTilesObstacles();
     changeTilesWeapons();
-    addCharacters();
+    addCharactersVeggie();
 
     activePlayer = veggies;
     prepareForTurn(activePlayer);
 
+    addCharactersFruits();
 }
 
 $().ready(function () {
@@ -62,14 +63,6 @@ $().ready(function () {
     }
     startGame();
 
-    // if ($(".fruits").length) {
-    //     // reload if fruit exists.
-    //     document.location.reload(true);
-    //     } else {
-    //     console.log("ERROR = Fruit class not found by jquery selector");
-    //     }
-
-    console.log($( ".mainTile" ).filter(".occupiedTile"));
 });
 
 /*-------------------------------------------------------------------------------
@@ -92,7 +85,8 @@ function selectRandomTile() {
     let randomTile = $('.mainTile:eq(' + createRandomNum() + ')');
     while ($(randomTile).hasClass("occupiedTile") || $(randomTile).hasClass("weapon") || $(randomTile).hasClass("blackhole") || randomTile === -1) {
         randomTile = $('.mainTile:eq(' + createRandomNum() + ')');
-    }
+    }   
+        
         return randomTile;
 };
 
@@ -178,39 +172,27 @@ let grasshopper = new Weapon("Grasshopper", "img/grasshopper.png", 40, "grasshop
 let caterpillar = new Weapon("Caterpillar", "img/caterpillar.png", 25, "caterpillar", "img/veggie_caterpillar.png", "img/fruit_caterpillar.png")
 
 
-function addCharacters() {
+function addCharactersVeggie() {
 
+    $(selectRandomTile()).attr('src', veggieSrc).addClass("occupiedTile character veggies");
+    
+}
 
-    $(selectRandomTile()).attr('src', fruitSrc).addClass("occupiedTile character fruits");
+function addCharactersFruits() {
 
-
-    let veggieStartPosition = selectRandomTile();
-    let conflict;
-
-    $.each((getAvailableTiles(fruits.calculatePosition())), function () {
-        while ($(this) === veggieStartPosition) {
+    let fruitStartPosition = selectRandomTile();
+ 
+    console.log(fruitStartPosition);
+    
+       while ($(fruitStartPosition).css("border") === veggies.borderStyle) {
             console.log('upsie');
-            veggieStartPosition = selectRandomTile();
-            conflict = true;
+            fruitStartPosition = selectRandomTile();
+         
         } 
-    });
-
-        if (!conflict) {
-        $(veggieStartPosition).attr('src', veggieSrc).addClass("occupiedTile character veggies");
-        }
+    
+            $(fruitStartPosition).attr('src', fruitSrc).addClass("occupiedTile character fruits");
+    
     }
-
-        // $.each((getAvailableTiles(fruits.calculatePosition())), function () {
-        //     if ($(this) === veggieStartPosition) {
-        //         console.log('upsie');
-        //         veggieStartPosition = selectRandomTile();
-        //         conflict=
-        //     } 
-        // });
-        //     $(veggieStartPosition).attr('src', veggieSrc).addClass("occupiedTile character veggies");
-
-// );
-
 
 /*-------------------------------------------------------------------------------
             SELECTED TILES
@@ -342,7 +324,7 @@ function checkForWeapons(player, position, i) {
             if (player.oldWeapon !== "") {
                 $('.mainTile:eq(' + (position + i) + ')').addClass(player.oldWeapon.cssClass).addClass("weapon");
                 $('.mainTile:eq(' + (position + i) + ')').attr("src", player.oldWeapon.src);
-                // player.oldWeapon = "";
+               
             } else {
                 $('.mainTile:eq(' + (position + i) + ')').attr('src', 'img/dirtMainTile.png');
             }
@@ -428,18 +410,22 @@ function addClickHandlerToAvailableTiles(player) {
             $(this).attr('src', player.src).css('transform', 'none');
             $(this).addClass("character occupiedTile").addClass(player.cssClass);
 
+                /*BLACK HOLE */
 
             if ($('.mainTile:eq(' + (newPosition) + ')').hasClass('blackhole')) {
 
                 ($('.mainTile:eq(' + (newPosition) + ')').removeClass('character fruits veggies occupiedTile'));
                 ($('.mainTile:eq(' + (newPosition) + ')').attr('src', 'img/black_hole.png'));
-                $(selectRandomTile()).attr('src', player.src).addClass("occupiedTile character").addClass(player.cssClass);
-            }
+
+                newPosition = ($(selectRandomTile()).index('.mainTile'))
+                $('.mainTile:eq(' + (newPosition) + ')').attr('src', player.src).addClass("occupiedTile character").addClass(player.cssClass);
+            };
 
 
             // start Battle Mode if the players get next to each other vertically or horizontally
 
-            if ((newPosition - passivePlayer.calculatePosition()) === 10 || (newPosition - passivePlayer.calculatePosition()) === -10 ||
+            if ((newPosition - passivePlayer.calculatePosition()) === 10 || 
+                (newPosition - passivePlayer.calculatePosition()) === -10 ||
                 ((newPosition - passivePlayer.calculatePosition()) === 1 && (Math.floor(newPosition / COLUMNS) === Math.floor(passivePlayer.calculatePosition() / COLUMNS))) ||
                 ((newPosition - passivePlayer.calculatePosition()) === -1 && (Math.floor(newPosition / COLUMNS) === Math.floor(passivePlayer.calculatePosition() / COLUMNS)))) {
                 changeUI();
