@@ -68,6 +68,8 @@ $().ready(function () {
     //     } else {
     //     console.log("ERROR = Fruit class not found by jquery selector");
     //     }
+
+    console.log($( ".mainTile" ).filter(".occupiedTile"));
 });
 
 /*-------------------------------------------------------------------------------
@@ -82,26 +84,18 @@ function createRandomNum() {
     return randomNum;
 };
 
-/* while (createRandomNum() <= 99 && createRandomNum() >= 0){
-        if (createRandomNum() < 0 || createRandomNum()>99) {
-        console.log(createRandomNum())
-}
 
-     createRandomNum()
- } */
-
-
+// function selecting random tile, loop running until it finds a tile which is not already occupied, 
+// making sure that all objects will be placed on the map
 function selectRandomTile() {
 
     let randomTile = $('.mainTile:eq(' + createRandomNum() + ')');
-    if ($(randomTile).hasClass("occupiedTile") || $(randomTile).hasClass("weapon") || $(randomTile).hasClass("blackhole") || randomTile === -1) {
-        // selectRandomTile();
+    while ($(randomTile).hasClass("occupiedTile") || $(randomTile).hasClass("weapon") || $(randomTile).hasClass("blackhole") || randomTile === -1) {
         randomTile = $('.mainTile:eq(' + createRandomNum() + ')');
-        return randomTile;
-    } else {
-        return randomTile; //check if it exists, .length
     }
-}
+        return randomTile;
+};
+
 
 function changeTilesObstacles() {
     for (i = 0; i < 3; i++) {
@@ -109,7 +103,7 @@ function changeTilesObstacles() {
         $(selectRandomTile()).attr('src', 'img/mole.png').addClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/grass.png').addClass("occupiedTile");
         $(selectRandomTile()).attr('src', 'img/pole.png').addClass("occupiedTile");
-        $(selectRandomTile()).attr('src', 'img/hay.png').addClass("occupiedTile hay");
+        $(selectRandomTile()).attr('src', 'img/hay.png').addClass("occupiedTile");
     }
 };
 
@@ -190,21 +184,31 @@ function addCharacters() {
     $(selectRandomTile()).attr('src', fruitSrc).addClass("occupiedTile character fruits");
 
 
-    veggieStartPosition = selectRandomTile();
+    let veggieStartPosition = selectRandomTile();
+    let conflict;
+
     $.each((getAvailableTiles(fruits.calculatePosition())), function () {
-        if ($(this) === veggieStartPosition) {
+        while ($(this) === veggieStartPosition) {
             console.log('upsie');
-            return false;
-
-        } else {
-            $(veggieStartPosition).attr('src', veggieSrc).addClass("occupiedTile character veggies");
-            return false;
-        }
-        // $('.mainTile:eq(' + 100 + ')').attr('src', fruitSrc).addClass("occupiedTile character fruits");
-
-
+            veggieStartPosition = selectRandomTile();
+            conflict = true;
+        } 
     });
-}
+
+        if (!conflict) {
+        $(veggieStartPosition).attr('src', veggieSrc).addClass("occupiedTile character veggies");
+        }
+    }
+
+        // $.each((getAvailableTiles(fruits.calculatePosition())), function () {
+        //     if ($(this) === veggieStartPosition) {
+        //         console.log('upsie');
+        //         veggieStartPosition = selectRandomTile();
+        //         conflict=
+        //     } 
+        // });
+        //     $(veggieStartPosition).attr('src', veggieSrc).addClass("occupiedTile character veggies");
+
 // );
 
 
@@ -559,7 +563,9 @@ function showActivePlayer(player) {
     $(player.defendButton).show();
 };
 
-
+/*-------------------------------------------------------------------------------
+            PLAY AGAIN
+---------------------------------------------------------------------------------*/
 
 function addEventListenerToPlayAgain() {
     $('#playAgainBtn').on('click', function () {
@@ -575,7 +581,7 @@ function addEventListenerToPlayAgain() {
 
         $('#main').css('display', 'flex');
 
-        // change back images and img classes to default
+        // change back big character images and img classes to default
 
         $(fruits.bigImgID).attr('src', "img/fruit_big.PNG");
         $(veggies.bigImgID).attr('src', "img/veggie_big.PNG");
@@ -590,6 +596,9 @@ function addEventListenerToPlayAgain() {
     })
 };
 
+/*-------------------------------------------------------------------------------
+            MODAL
+---------------------------------------------------------------------------------*/
 $('#modalOpenBtn').on('click', function () {
     $('.modalDiv').css('display', 'block');
     closeModalOnOutsideClick();
