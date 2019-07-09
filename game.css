@@ -87,7 +87,7 @@ margin: 0px 15px;
     color: rgba(240, 70, 3, 0.918);
 }
 
-#fruitsConfidenceLevel, #veggieConfidenceLevel {
+#fruitsConfidenceLevel, #veggiesConfidenceLevel {
     color: rgb(7, 123, 255);
 }
 
@@ -226,56 +226,42 @@ figure figcaption {
 
 
 
-#veggieAttackBtn, #fruitAttackBtn {
+#veggiesAttackBtn, #fruitsAttackBtn {
     background: url('img/scare_btn.png') 0 0 transparent;
-    /* background-size: 100px;
-    background-repeat: no-repeat; */
 }
 
-#veggieAttackBtn:hover, #fruitAttackBtn:hover {
+#veggiesAttackBtn:hover, #fruitsAttackBtn:hover {
     background: url("img/scare_btn_hover.png") 0 0 transparent;
-    /* background-size: 100px;
-    background-repeat: no-repeat; 
-   */
 }
 
-#veggieAttackBtn:focus, #fruitAttackBtn:focus {
+#veggiesAttackBtn:focus, #fruitsAttackBtn:focus {
     background: url("img/scare_btn_pressed.png") 0 0 transparent;
-    /* background-size: 100px;
-    background-repeat: no-repeat; */
-  
 }
 
-#veggieDefendBtn, #fruitDefendBtn {
+#veggiesDefendBtn, #fruitsDefendBtn {
     background: url('img/hide_btn.png') 0 0 transparent;
-    /* background-size: 100px;
-    background-repeat: no-repeat; */
 }
 
-#veggieDefendBtn:hover, #fruitDefendBtn:hover {
+#veggiesDefendBtn:hover, #fruitsDefendBtn:hover {
     background: url('img/hide_btn_hover.png') 0 0 transparent;
-    /* background-size: 100px;
-    background-repeat: no-repeat; */
 }
 
-#veggieDefendBtn:focus, #fruitDefendBtn:focus {
+#veggiesDefendBtn:focus, #fruitsDefendBtn:focus {
     background: url('img/hide_btn_pressed.png') 0 0 transparent;
-    /* background-size: 100px;
-    background-repeat: no-repeat; */
 }
 
-#veggieAttackBtn,
-#fruitAttackBtn,
-#veggieAttackBtn:hover,
-#fruitAttackBtn:hover,
-#veggieAttackBtn:focus,
-#fruitAttackBtn:focus,
-#veggieDefendBtn,
-#fruitDefendBtn,
-#veggieDefendBtn:hover,
-#fruitDefendBtn:hover,
-#veggieDefendBtn:focus,
-#fruitDefendBtn:focus {
+#veggiesAttackBtn,
+#fruitsAttackBtn,
+#veggiesAttackBtn:hover,
+#fruitsAttackBtn:hover,
+#veggiesAttackBtn:focus,
+#fruitsAttackBtn:focus,
+#veggiesDefendBtn,
+#fruitsDefendBtn,
+#veggiesDefendBtn:hover,
+#fruitsDefendBtn:hover,
+#veggiesDefendBtn:focus,
+#fruitsDefendBtn:focus {
         background-size: 100px;
         background-repeat: no-repeat; 
 } 
@@ -330,11 +316,11 @@ figure figcaption {
     transform: scale(1.15);
 }
 
-#veggieAttackBtn, #veggieDefendBtn {
+#veggiesAttackBtn, #veggiesDefendBtn {
     margin-right: 10px;
 }
 
-#fruitAttackBtn, #fruitDefendBtn {
+#fruitsAttackBtn, #fruitsDefendBtn {
     margin-right: 10px;
 }
 

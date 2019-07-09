@@ -111,23 +111,22 @@ function changeTilesWeapons() {
 ---------------------------------------------------------------------------------*/
 
 class Character {
-    constructor(src, cssClass, bigImgID, weaponName, confidenceLevelDisplay, borderStyle,
-        moveImgSrc, winImgSrc, attackButton, defendButton, isDefending) {
+    constructor(src, cssClass, borderStyle) {
         this.src = src;
         this.cssClass = cssClass;
-        this.bigImgID = bigImgID;
-        this.weaponName = weaponName;
+        this.bigImgID = "#" + this.cssClass + "BigPic"; 
+        this.weaponName = "#" + this.cssClass + "WeaponName"; 
         this.weaponPoint = "#" + this.cssClass + "WeaponPoint";
-        this.cofidenceLevel = 100;
-        this.confidenceLevelDisplay = confidenceLevelDisplay;
+        this.confidenceLevel = 100; 
+        this.confidenceLevelDisplay = "#" + this.cssClass + "ConfidenceLevel";
         this.currentWeapon = "";
         this.oldWeapon = "";
         this.borderStyle = borderStyle;
-        this.moveImgSrc = moveImgSrc;
-        this.winImgSrc = winImgSrc;
-        this.attackButton = attackButton;
-        this.defendButton = defendButton;
-        this.isDefending = isDefending;
+        this.moveImgSrc = "img/" + this.cssClass + "_move.png"; 
+        this.winImgSrc = "img/" + this.cssClass + "_win.PNG"; 
+        this.attackButton = "#" + this.cssClass + "AttackBtn"; 
+        this.defendButton = "#" + this.cssClass + "DefendBtn"; 
+        this.isDefending = false;
 
     }
 
@@ -137,19 +136,17 @@ class Character {
 
     resetCharacterStats() {
         this.currentWeapon = "";
-        this.cofidenceLevel = 100;
-        $(this.confidenceLevelDisplay).text(" " + this.cofidenceLevel);
+        this.confidenceLevel = 100;
+        $(this.confidenceLevelDisplay).text(" " + this.confidenceLevel);
         $(this.weaponName).text("Bare Hands");
         $(this.weaponPoint).text(10);
     }
 
 };
 
-let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "#fruitWeaponName", "#fruitsConfidenceLevel",
-    "2px solid rgba(212, 128, 28, 0.9)", "img/fruits_move.png", "img/fruits_win.PNG", '#fruitAttackBtn', '#fruitDefendBtn', false);
+let fruits = new Character(fruitSrc, "fruits", "2px solid rgba(212, 128, 28, 0.9)");
 
-let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "#veggieWeaponName", "#veggieConfidenceLevel",
-    "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png", "img/veggies_win.PNG", '#veggieAttackBtn', '#veggieDefendBtn', false);
+let veggies = new Character(veggieSrc, "veggies", "2px solid rgba(19, 82, 19, 0.59)");
 
 
 let activePlayer = veggies;
@@ -460,8 +457,8 @@ function endPlayerTurn() {
 ---------------------------------------------------------------------------------*/
 function changeUIToBattleMode() {
     $('#gameboard').fadeOut(1000);
-    $('#player1').append('<div id=veggieBtnDiv><button class = btn id=veggieAttackBtn></button><button class = btn id=veggieDefendBtn></button></div>');
-    $('#player2').append('<div id=fruitBtnDiv><button class = btn id=fruitAttackBtn></button><button class = btn id=fruitDefendBtn></button></div>');
+    $('#player1').append('<div id=veggieBtnDiv><button class = btn id=veggiesAttackBtn></button><button class = btn id=veggiesDefendBtn></button></div>');
+    $('#player2').append('<div id=fruitBtnDiv><button class = btn id=fruitsAttackBtn></button><button class = btn id=fruitsDefendBtn></button></div>');
 
 
     $(veggies.bigImgID).css('float', 'right').css('margin-top', '15px');
@@ -487,25 +484,25 @@ function fight(player) {
 
         if (player.currentWeapon === "") {
             if (passivePlayer.isDefending === true) {
-                passivePlayer.cofidenceLevel -= (10 / 2);
+                passivePlayer.confidenceLevel -= (10 / 2);
                 passivePlayer.isDefending = false;
             } else {
-                passivePlayer.cofidenceLevel -= 10;
+                passivePlayer.confidenceLevel -= 10;
             }
         } else {
             if (passivePlayer.isDefending === true) {
-                passivePlayer.cofidenceLevel -= (player.currentWeapon.scarePoint / 2);
+                passivePlayer.confidenceLevel -= (player.currentWeapon.scarePoint / 2);
                 passivePlayer.isDefending = false;
             } else {
-                passivePlayer.cofidenceLevel -= player.currentWeapon.scarePoint
+                passivePlayer.confidenceLevel -= player.currentWeapon.scarePoint
             }
         }
 
-        $(passivePlayer.confidenceLevelDisplay).text(" " + passivePlayer.cofidenceLevel);
+        $(passivePlayer.confidenceLevelDisplay).text(" " + passivePlayer.confidenceLevel);
 
         $(passivePlayer.bigImgID).addClass('shake');
 
-        if (passivePlayer.cofidenceLevel <= 0) {
+        if (passivePlayer.confidenceLevel <= 0) {
             $(passivePlayer.attackButton).attr("disabled", true);
             $('#player1').fadeOut(1000);
             $('#player2').fadeOut(1000, function () {
