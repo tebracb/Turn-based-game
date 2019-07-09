@@ -20,22 +20,12 @@ let veggieSrc = "img/veggies.PNG";
 let weapons = [];
 
 
-/*-------------------------------------------------------------------------------
-                DOCUMENT READY - called when the document is loaded
----------------------------------------------------------------------------------*/
 
 function startGame() {
-    veggies.currentWeapon = "";
-    veggies.cofidenceLevel = 100;
-    $(veggies.confidenceLevelDisplay).text(" " + veggies.cofidenceLevel);
-    $(veggies.weaponName).text("Bare Hands");
-    $(veggies.weaponPoint).text(10);
 
-    fruits.currentWeapon = "";
-    fruits.cofidenceLevel = 100;
-    $(fruits.confidenceLevelDisplay).text(" " + fruits.cofidenceLevel);
-    $(fruits.weaponName).text("Bare Hands");
-    $(fruits.weaponPoint).text(10);
+    // set character stats (back) to default
+    veggies.resetCharacterStats();
+    fruits.resetCharacterStats();
 
     // (re)draw the map
 
@@ -49,6 +39,10 @@ function startGame() {
 
     addCharactersFruits();
 }
+
+/*-------------------------------------------------------------------------------
+                DOCUMENT READY - called when the document is loaded
+---------------------------------------------------------------------------------*/
 
 $().ready(function () {
     $(SQUARE).append(landTile);
@@ -85,9 +79,9 @@ function selectRandomTile() {
     let randomTile = $('.mainTile:eq(' + createRandomNum() + ')');
     while ($(randomTile).hasClass("occupiedTile") || $(randomTile).hasClass("weapon") || $(randomTile).hasClass("blackhole") || randomTile === -1) {
         randomTile = $('.mainTile:eq(' + createRandomNum() + ')');
-    }   
-        
-        return randomTile;
+    }
+
+    return randomTile;
 };
 
 
@@ -117,13 +111,13 @@ function changeTilesWeapons() {
 ---------------------------------------------------------------------------------*/
 
 class Character {
-    constructor(src, cssClass, bigImgID, weaponName, weaponPoint, confidenceLevelDisplay, borderStyle,
+    constructor(src, cssClass, bigImgID, weaponName, confidenceLevelDisplay, borderStyle,
         moveImgSrc, winImgSrc, attackButton, defendButton, isDefending) {
         this.src = src;
         this.cssClass = cssClass;
         this.bigImgID = bigImgID;
         this.weaponName = weaponName;
-        this.weaponPoint = weaponPoint;
+        this.weaponPoint = "#" + this.cssClass + "WeaponPoint";
         this.cofidenceLevel = 100;
         this.confidenceLevelDisplay = confidenceLevelDisplay;
         this.currentWeapon = "";
@@ -141,12 +135,20 @@ class Character {
         return ($("." + this.cssClass).index('.mainTile'));
     };
 
+    resetCharacterStats() {
+        this.currentWeapon = "";
+        this.cofidenceLevel = 100;
+        $(this.confidenceLevelDisplay).text(" " + this.cofidenceLevel);
+        $(this.weaponName).text("Bare Hands");
+        $(this.weaponPoint).text(10);
+    }
+
 };
 
-let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "#fruitWeaponName", "#fruitWeaponPoint", "#fruitsConfidenceLevel",
+let fruits = new Character(fruitSrc, "fruits", '#bigFruitPic', "#fruitWeaponName", "#fruitsConfidenceLevel",
     "2px solid rgba(212, 128, 28, 0.9)", "img/fruits_move.png", "img/fruits_win.PNG", '#fruitAttackBtn', '#fruitDefendBtn', false);
 
-let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "#veggieWeaponName", "#veggieWeaponPoint", "#veggieConfidenceLevel",
+let veggies = new Character(veggieSrc, "veggies", '#bigVeggiePic', "#veggieWeaponName", "#veggieConfidenceLevel",
     "2px solid rgba(19, 82, 19, 0.59)", "img/veggies_move.png", "img/veggies_win.PNG", '#veggieAttackBtn', '#veggieDefendBtn', false);
 
 
@@ -175,24 +177,20 @@ let caterpillar = new Weapon("Caterpillar", "img/caterpillar.png", 25, "caterpil
 function addCharactersVeggie() {
 
     $(selectRandomTile()).attr('src', veggieSrc).addClass("occupiedTile character veggies");
-    
+
 }
 
 function addCharactersFruits() {
 
     let fruitStartPosition = selectRandomTile();
- 
-    console.log(fruitStartPosition);
-    
-       while ($(fruitStartPosition).css("border") === veggies.borderStyle) {
-            console.log('upsie');
-            fruitStartPosition = selectRandomTile();
-         
-        } 
-    
-            $(fruitStartPosition).attr('src', fruitSrc).addClass("occupiedTile character fruits");
-    
+
+    while ($(fruitStartPosition).css("border") === veggies.borderStyle) {
+        fruitStartPosition = selectRandomTile();
+
     }
+    $(fruitStartPosition).attr('src', fruitSrc).addClass("occupiedTile character fruits");
+
+}
 
 /*-------------------------------------------------------------------------------
             SELECTED TILES
@@ -309,27 +307,29 @@ function deselectAvailableTiles(characterPosition) {
             WEAPON FUNCTIONALITY
 ---------------------------------------------------------------------------------*/
 
-function checkForWeapons(player, position, i) {
+function checkForWeapons(player, position) {
 
-
+    //looping through weapons to check single tile, if it has any weapon class
     $.each(weapons, function (index, w) {
 
-        //new code - i added
 
-        if ($('.mainTile:eq(' + (position + i) + ')').hasClass(w.cssClass)) {
-            $('.mainTile:eq(' + (position + i) + ')').removeClass(w.cssClass).removeClass("weapon");
+        if ($('.mainTile:eq(' + (position) + ')').hasClass(w.cssClass)) {
+            $('.mainTile:eq(' + (position) + ')').removeClass(w.cssClass).removeClass("weapon");
 
+            //if there is a currentWeapon (weapon which was already picked up), it becomes oldWeapon
             player.oldWeapon = player.currentWeapon;
 
+            //case: picking up 2nd/... weapon, leaving oldWeapon on the tile
             if (player.oldWeapon !== "") {
-                $('.mainTile:eq(' + (position + i) + ')').addClass(player.oldWeapon.cssClass).addClass("weapon");
-                $('.mainTile:eq(' + (position + i) + ')').attr("src", player.oldWeapon.src);
-               
+                $('.mainTile:eq(' + (position) + ')').addClass(player.oldWeapon.cssClass).addClass("weapon");
+                $('.mainTile:eq(' + (position) + ')').attr("src", player.oldWeapon.src);
+            
+             //case: picking up 1st weapon
             } else {
-                $('.mainTile:eq(' + (position + i) + ')').attr('src', 'img/dirtMainTile.png');
+                $('.mainTile:eq(' + (position) + ')').attr('src', 'img/dirtMainTile.png');
             }
 
-
+            // updating character stats and images to match new currentWeapon
             $(player.weaponName).text(w.name);
             $(player.weaponPoint).text(w.scarePoint);
 
@@ -353,8 +353,7 @@ function checkForWeapons(player, position, i) {
 
 
 /* Function taking the moving character's calculatePosition() and img src as arguments, moving the character
- to the new tile and changing img src-s and css classes accordingly
- Does not recalculate character's position  */
+ to the new tile and changing img src-s and css classes accordingly */
 
 function addClickHandlerToAvailableTiles(player) {
 
@@ -371,6 +370,7 @@ function addClickHandlerToAvailableTiles(player) {
 
             $('.mainTile:eq(' + (oldPosition) + ')').removeClass("character fruits veggies occupiedTile");
 
+            //character is leaving first weapon behind (when leaving a tile) when he picked up a new one
             if ($('.mainTile:eq(' + (oldPosition) + ')').hasClass('weapon') && (player.oldWeapon !== "")) {
                 $('.mainTile:eq(' + (oldPosition) + ')').attr("src", player.oldWeapon.src);
             } else {
@@ -378,30 +378,30 @@ function addClickHandlerToAvailableTiles(player) {
                 $('.mainTile:eq(' + (oldPosition) + ')').attr("src", 'img/dirtMainTile.png');
             }
 
-
+        // Defining which direction to check for weapons, then loop over selected tiles
 
             //RIGHT
             if ((newPosition - oldPosition) < 4 && (newPosition - oldPosition) > 0) {
                 for (i = 1; i <= (newPosition - oldPosition); i++) {
-                    checkForWeapons(player, oldPosition, i); //TODO - pass in oldPosition + i to the function
+                    checkForWeapons(player, oldPosition + i); 
                 }
 
                 //LEFT
             } else if ((newPosition - oldPosition) < 0 && (newPosition - oldPosition) > -4) {
                 for (i = -1; i >= (newPosition - oldPosition); i--) {
-                    checkForWeapons(player, oldPosition, i)
+                    checkForWeapons(player, oldPosition + i)
                 }
 
                 //DOWN
             } else if ((newPosition - oldPosition) >= COLUMNS) {
                 for (i = COLUMNS; i <= (newPosition - oldPosition); i += COLUMNS) {
-                    checkForWeapons(player, oldPosition, i)
+                    checkForWeapons(player, oldPosition + i)
                 }
 
                 //UP
             } else {
                 for (i = -COLUMNS; i >= (newPosition - oldPosition); i -= COLUMNS) {
-                    checkForWeapons(player, oldPosition, i)
+                    checkForWeapons(player, oldPosition + i)
                 }
             }
 
@@ -410,7 +410,7 @@ function addClickHandlerToAvailableTiles(player) {
             $(this).attr('src', player.src).css('transform', 'none');
             $(this).addClass("character occupiedTile").addClass(player.cssClass);
 
-                /*BLACK HOLE */
+            /*BLACK HOLE */
 
             if ($('.mainTile:eq(' + (newPosition) + ')').hasClass('blackhole')) {
 
@@ -424,11 +424,11 @@ function addClickHandlerToAvailableTiles(player) {
 
             // start Battle Mode if the players get next to each other vertically or horizontally
 
-            if ((newPosition - passivePlayer.calculatePosition()) === 10 || 
-                (newPosition - passivePlayer.calculatePosition()) === -10 ||
+            if ((newPosition - passivePlayer.calculatePosition()) === COLUMNS ||
+                (newPosition - passivePlayer.calculatePosition()) === -(COLUMNS) ||
                 ((newPosition - passivePlayer.calculatePosition()) === 1 && (Math.floor(newPosition / COLUMNS) === Math.floor(passivePlayer.calculatePosition() / COLUMNS))) ||
                 ((newPosition - passivePlayer.calculatePosition()) === -1 && (Math.floor(newPosition / COLUMNS) === Math.floor(passivePlayer.calculatePosition() / COLUMNS)))) {
-                changeUI();
+                changeUIToBattleMode();
                 return;
             }
 
@@ -458,7 +458,7 @@ function endPlayerTurn() {
 /*-------------------------------------------------------------------------------
             BATTLE MODE
 ---------------------------------------------------------------------------------*/
-function changeUI() {
+function changeUIToBattleMode() {
     $('#gameboard').fadeOut(1000);
     $('#player1').append('<div id=veggieBtnDiv><button class = btn id=veggieAttackBtn></button><button class = btn id=veggieDefendBtn></button></div>');
     $('#player2').append('<div id=fruitBtnDiv><button class = btn id=fruitAttackBtn></button><button class = btn id=fruitDefendBtn></button></div>');
@@ -510,7 +510,6 @@ function fight(player) {
             $('#player1').fadeOut(1000);
             $('#player2').fadeOut(1000, function () {
                 $('#main').css('display', 'block');
-                $(player.cssClass).css('text-transform', 'capitalize');
                 $('<div id=winnerImgDiv><img src =' + player.winImgSrc + ' width=400px></div>').hide().appendTo('#main').fadeIn(1500);
 
                 $('#main').append('<h1 id=winnerMessage>Congratulations, the winner is Team ' + player.cssClass + '!</h1>');
