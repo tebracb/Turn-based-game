@@ -34,4 +34,4 @@ Technologies:
 * Object-oriented JavaScript application created with **jQuery**, interface created with **HTML** and **CSS**
 ---
 
-## Visit the Project: https://tebracb.github.io/Turn-based-game/
+## Play the Game: https://tebracb.github.io/Turn-based-game/
